@@ -1,0 +1,120 @@
+<html>
+	<head>
+		<title>SDNL</title>
+		<link type="text/css" href="/jquery/css/ui-lightness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
+		<script type="text/javascript" src="/jquery/js/jquery-1.5.1.min.js"></script>
+	        <script type="text/javascript" src="/jquery/js/jquery-ui-1.8.13.custom.min.js"></script>
+       		<script type="text/javascript">
+function doAlert(msg) {
+	var $dialog = $('<div></div>')
+        	.html('Null')
+                .dialog({
+                	modal: true,
+                        autoOpen: false,
+                        title: 'Alert',
+                        buttons: { "OK": function() { $(this).dialog("close"); } }
+                });
+
+	$dialog.html("<p>" + msg + "</p>");
+	$dialog.dialog('open');
+}
+			function submit() {
+				var age = jQuery.trim($("#age").val());
+				var gen = $("#gender").val();
+				var eth = $("#ethnicity").val();
+				var oth = jQuery.trim($("#other").val());
+				var his = $("#hispanic").val();
+				var cig = $("#cigarettes").val();
+				var drg = $("#drug").val();
+
+				if (age.length == 0) {
+                                        doAlert("Please enter your age.");
+                                        return;
+                                }
+
+				if (eth == null) {
+					doAlert("Please select your ethnicity.");
+					return;
+				}
+
+				if (eth.indexOf("Other") >= 0) {
+					if (oth.length == 0) {
+						doAlert("Please enter your ethnicity in the text area.");
+						return;
+					}
+					eth = eth + "-" + oth;
+				}
+
+				var str = age+","+gen+","+eth+","+his+','+cig+","+drg;
+				$.post("/cgi-bin/fd_out.cgi?info="+str, function(){
+                                	document.location="/cgi-bin/fd.cgi";
+                                });
+			}
+		</script>
+
+		<style>
+			body { font: 100% "Trebuchet MS", sans-serif; }
+			input { font: 85% "Trebuchet MS", sans-serif; }
+			#container { margin: 50px; width: 650px; }
+			.title { text-align: center; margin-bottom: 30px; }
+			.form { text-align: left; margin-bottom: 50px; }
+			#begin_link { font: 75% "Trebuchet MS", sans-serif; padding: .4em 1em .4em 1em; text-decoration: none; }
+		</style>
+	</head>
+
+	<body>
+		<center>
+		<div id="container">
+			<div class="form">
+Please enter some information about yourself. (This information will remain entirely confidential and will never be linked to your account. We will use it strictly when reporting results of the study.):<br>
+<br>
+Age: 
+<input id="age" type="text" size="5" />
+<br><br>
+
+Gender: 
+<select id="gender" size="1">
+	<option>Male</option>
+	<option>Female</option>
+</select>
+<br><br>
+
+Ethnicity: 
+<select id="ethnicity" multiple="multiple">
+	<option value="AfAm">Black or African American</option>
+	<option value="AsAm">Asian American</option>
+	<option value="EurAm">Caucasian American</option>
+	<option value="NatAm">American Indian / Alaska Native</option>
+	<option value="PacIsl">Native Hawaiian or Other Pacific Islander</option>
+	<option value="Mix">Mixed Race</option>
+	<option value="Other">Other (please specify below)</option>
+</select><br>
+&nbsp;&nbsp;&nbsp;&nbsp;if Other: <input id="other" type="text" size="25">
+<br><br>
+
+Are you Hispanic or Latino? 
+<select id="hispanic">
+	<option>No</option>
+	<option>Yes</option>
+</select>
+<br><br>
+
+Do you currently smoke cigarettes? 
+<select id="cigarettes">
+	<option>No</option>
+	<option>Yes</option>
+</select>
+<br><br>
+
+Have you ever been diagnosed with a drug or alcohol use disorder?
+<select id="drug" size="1">
+	<option>No</option>
+	<option>Yes</option>
+</select>
+			</div>
+			<p><a href="javascript:submit();" id="begin_link" class="ui-state-default ui-corner-all">Continue</a></p>
+		</div>
+		</center>
+	</body>
+
+</html>
