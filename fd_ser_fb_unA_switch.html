@@ -11,6 +11,8 @@
 			var tStep = 0;
 			var waitTO = null;
             var rts = [];
+            var false_alarms = [];
+            var ignore_press = 0
             var trial = 0;
             var resp = -1;
             var rew = -1;
@@ -61,7 +63,6 @@
 			
 			cond = cond.concat(cond2); //add switched trials at the end
 
-			alert(cond.length)
 			var trial_order = [];
 			var rew_trial = []; //determines whether trial is rewarded
 			for (var i = 0; i < cond.length; i++) {		
@@ -113,6 +114,9 @@
  			cue_img[cue_cb.length] = new Image();
 			cue_img[cue_cb.length].src = "/fd/pics/scramble.jpg";
 
+			//listen for keypresses
+			window.addEventListener("keydown", response, false);
+			
 			//prepare the trial
 			$(document).ready(function() {
                 $("#cues").hide();
@@ -157,6 +161,7 @@
 				$.post("/cgi-bin/fd_out.cgi?cond="+cond);
 				$.post("/cgi-bin/fd_out.cgi?trial_order="+trial_order)		
 				$.post("/cgi-bin/fd_out.cgi?rew="+rew_trial);			
+				$.post("/cgi-bin/fd_out.cgi?fa="+false_alarms);			
 				$.post("/cgi-bin/fd_out.cgi?ser="+out);
                 $.post("/cgi-bin/fd_out.cgi?bonus="+bank, function(){
                      document.location="/cgi-bin/fd.cgi";});
@@ -164,10 +169,13 @@
 
 			//Record responses
 			function response(r) {
-				if (waitTO == null) { return; }
-                if (r == -1) { //no response
-                return; }
-				
+				if (ignore_press == 1) {return;} //ignore if already pressed
+				if (waitTO == null && r.keyCode == "32")  //false alarm
+				{ 
+				false_alarms += String(trial_order[trial]) + ',' + String(tStep) + ','
+				}
+				else if (r.keyCode == "32") { //space bar
+				ignore_press = 1
 				clearTimeout(waitTO);
 				$("#target_act").center().hide();
 				$("#target_wait").center().show();
@@ -189,8 +197,9 @@
 				
                 out += rew.toFixed(2) + "," + rt + "," + rt_thresh_old.toFixed(2);
                 if (trial != rew_trial.length-1) { out += ","; } //append comma if not the last trial
-
 				setTimeout(nextTrainingStep, im_dur - rt);  //wait for rest of imdur before moving on to fixation
+				}
+				
 			}
 			
 			//Set up a trial with the correct cues in the correct location 
@@ -228,13 +237,14 @@
 
 			//Loop through sections of a trial (response, fixation, outcome, ITI), then go to next training trial
 			function nextTrainingStep() {
-			
+				ignore_press = 0
 				tStep++;
 				document.getSelection().removeAllRanges(); //clear selection in case user selected a cue
 
 				switch (tStep) {
 					case 1: // response
 					$("#target_act").center().show();
+					resp = -1
                     rt = new Date().getTime();
 					waitTO = setTimeout(nextTrainingStep, im_dur - latency); //1250 ms to respond				
 					break;
@@ -317,10 +327,8 @@
 				</div>
 		</div>
 		
-		<a href="javascript:response(1);">
 		<div id="target_act">
 		</div>
-		</a>
 		
 		<div id="target_wait">
 		</div>
