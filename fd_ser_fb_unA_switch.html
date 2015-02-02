@@ -24,12 +24,12 @@
             var num_switched_trials = 5
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
             var rt_step_up = 10 //adjust size for thresholding
-            var rt_step_down = 10 //adjust size for thresholding
+            var rt_step_down = 20 //adjust size for thresholding
 			$.cookie('earnings',0); //Set cookie
 
 			//set experimental timing
-			var im_dur = 2000; //image duration
-            var latency = 350; //latency to target
+			var im_dur = 2500; //image duration
+            var latency = 500; //latency to target
             var out_dur =  4000; //outcome duration
             var init_dur = 2500; //get ready duration
             var scramble_dur = 1500; //scramble image duration
@@ -112,7 +112,7 @@
 			var cue_blk = new Image();
 			cue_blk.src = "/mw/pics/black.jpg";
  			cue_img[cue_cb.length] = new Image();
-			cue_img[cue_cb.length].src = "/fd/pics/scramble.jpg";
+			cue_img[cue_cb.length].src = "/fd/pics/target_black.jpg";
 
 			//listen for keypresses
 			window.addEventListener("keydown", response, false);
@@ -295,25 +295,6 @@
 			body { font: 100% "Trebuchet MS", sans-serif, white; background: black; }
             big { font: 200% "Trebuchet MS", sans-serif; color: white; }
             
-            #target_wait {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            background-color:white;
-            width: 20px;
-            height: 20px;
-            border-radius: 20px;
-            }
-                        
-            #target_act {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            background-color:white;
-            width: 20px;
-            height: 20px;
-            border-radius: 20px;
-            }
 		</style>
 	</head>
 
@@ -323,14 +304,20 @@
 
 		<div id="cues">	
 				<div id="image">
-					<img style="height: 50%;" id="cue" src="/mw/pics/black.jpg">
+					<img style="height: 60%;" id="cue" src="/fd/pics/black.jpg">
 				</div>
 		</div>
 		
 		<div id="target_act">
+				<div id="image">
+					<img style="height: 20%;" id="cue" src="/fd/pics/target_blue.jpg">
+				</div>
 		</div>
 		
 		<div id="target_wait">
+				<div id="image">
+					<img style="height: 20%;" id="cue" src="/fd/pics/target_blue.jpg">
+				</div>
 		</div>
 		
 		

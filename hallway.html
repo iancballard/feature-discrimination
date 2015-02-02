@@ -11,7 +11,7 @@
 			var waitTO = null;
 
             var left_right = []; //screen counterbalance
-            var rew_trial = []; //determines whether trial is rewarded
+            var rew_trial = [0 ,0]; //determines whether trial is rewarded
             var rts = [];
             var false_alarms = [];
             var ignore_press = 0
@@ -22,7 +22,7 @@
             var bank = 0;
             var reward = 1;
             var out = ""; // this string will be saved on the server at the end of training
-            var num_trials = 20
+            var num_trials = 2
             var rt_thresh = 450 //start value for rt threshold
             var rt_step_up = 50 //adjust size for thresholding
             var rt_step_down = 50 //adjust size for thresholding
@@ -33,19 +33,18 @@
             var fix_dur = 1000;
             var out_dur = 1000; 
             var iti_dur = 1000;
-            var outcome_dur = 4000;
-            var init_dur = 2500; 
+            var outcome_dur =  500;
+            var init_dur = 500; 
             
-			//select 3/4 the trials to be rewarded 
-			for (var i = 0; i < 3*num_trials/4; i++) {rew_trial[i] = 1}
-			for (var i = 3*num_trials/4; i < num_trials; i++) {rew_trial[i] = 0}
-			shuffle(rew_trial);
 			//preload images
-			var cue_img = new Image();
-			cue_img.src = "/fd/pics/scramble_door.jpg";
 			var cue_blk = new Image();
 			cue_blk.src = "/mw/pics/black.jpg";
-						
+			cue_img = [];
+			cue_img[0] = new Image();
+			cue_img[0].src = "/fd/pics/cue1.jpg";
+			cue_img[1] = new Image();
+			cue_img[1].src = "/fd/pics/cue2.jpg";
+				
 			//prepare the trial
 			$(document).ready(function() {
                 $("#cues").center().hide();
@@ -91,7 +90,7 @@
 
 			//Training over. Write out respondes to the text file
 			function done() {					
-				$.post("/cgi-bin/fd_out.cgi?rt="+out, function(){
+				$.post("/cgi-bin/fd_out.cgi?ignore="+out, function(){
                                 	document.location="/cgi-bin/fd.cgi";
                                 });
 			}
@@ -138,21 +137,15 @@
 				//If experiment is over, show bank, pause 3 seconds and call done
                 if (trial == num_trials) { 
                 	
-                	perc_corr = 100*bank/num_trials
-					$("#outcome").html("<big>" + "You responded fast enough " + perc_corr.toFixed(0) + "% of the time. </big>");
-					$("#cues").hide();
+             		$("#cues").hide();
 					$("#fix").hide();
-					$("#outcome").center().show();
 					
-					rt_thresh = average(rts)
-					$.cookie('avg_rt',rt_thresh); //Set cookie
-			
                     setTimeout(done, outcome_dur);
                     return;
                 }
 
-				$("#cue").attr("src", cue_img.src);
-                $("#cues").center().show();
+				$("#cue").attr("src", cue_img[ trial ].src);
+				$("#cues").center().show();
 				$("#fix").hide();
 
 				if (rew_trial[trial] == 1) { //rewarded trial

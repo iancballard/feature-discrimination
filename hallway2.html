@@ -22,7 +22,7 @@
             var bank = 0;
             var reward = 1;
             var out = ""; // this string will be saved on the server at the end of training
-            var num_trials = 20
+            var num_trials = 2
             var rt_thresh = 450 //start value for rt threshold
             var rt_step_up = 50 //adjust size for thresholding
             var rt_step_down = 50 //adjust size for thresholding
@@ -33,16 +33,13 @@
             var fix_dur = 1000;
             var out_dur = 1000; 
             var iti_dur = 1000;
-            var outcome_dur = 4000;
+            var outcome_dur = 0;
             var init_dur = 2500; 
             
-			//select 3/4 the trials to be rewarded 
-			for (var i = 0; i < 3*num_trials/4; i++) {rew_trial[i] = 1}
-			for (var i = 3*num_trials/4; i < num_trials; i++) {rew_trial[i] = 0}
-			shuffle(rew_trial);
+			rew_trial = [0,1];
 			//preload images
 			var cue_img = new Image();
-			cue_img.src = "/fd/pics/scramble_door.jpg";
+			cue_img.src = "/fd/pics/guitar.jpg";
 			var cue_blk = new Image();
 			cue_blk.src = "/mw/pics/black.jpg";
 						
@@ -52,14 +49,12 @@
                 $("#target_act").center().hide();
                 $("#target_wait").center().hide();
                 $("#fix").center().hide();
-                $("#outcome").html("<big>Get ready...</big>");
-				$("#outcome").center().show();
 
                 // preload images
                 new Image().src = "/fd/pics/fix_def.jpg";
 
                 setTimeout(function() { $("#outcome").hide(); $("#fix").center().show();}, init_dur);
-				setTimeout(nextTrainingTrial, 2*init_dur); //pause f and start the experiment
+				setTimeout(nextTrainingTrial,500); //pause f and start the experiment
 			});
 
 			//listen for keypresses
@@ -91,7 +86,7 @@
 
 			//Training over. Write out respondes to the text file
 			function done() {					
-				$.post("/cgi-bin/fd_out.cgi?rt="+out, function(){
+				$.post("/cgi-bin/fd_out.cgi?ignore="+out, function(){
                                 	document.location="/cgi-bin/fd.cgi";
                                 });
 			}
@@ -137,23 +132,20 @@
 			function nextTrainingTrial() {
 				//If experiment is over, show bank, pause 3 seconds and call done
                 if (trial == num_trials) { 
-                	
-                	perc_corr = 100*bank/num_trials
-					$("#outcome").html("<big>" + "You responded fast enough " + perc_corr.toFixed(0) + "% of the time. </big>");
-					$("#cues").hide();
-					$("#fix").hide();
-					$("#outcome").center().show();
-					
-					rt_thresh = average(rts)
-					$.cookie('avg_rt',rt_thresh); //Set cookie
-			
+
                     setTimeout(done, outcome_dur);
                     return;
-                }
 
-				$("#cue").attr("src", cue_img.src);
-                $("#cues").center().show();
+                }
+				
+				if (trial == 0){
+				$("#cue").attr("src", "/fd/pics/cue2.jpg");
+				}
+				if (trial == 1){
+				$("#cue").attr("src", "/fd/pics/cue6.jpg");
+				}
 				$("#fix").hide();
+                $("#cues").center().show();
 
 				if (rew_trial[trial] == 1) { //rewarded trial
 				tStep = 0;
@@ -189,33 +181,8 @@
 					$("#cue").attr("src", cue_blk.src);
 					setTimeout(nextTrainingStep, fix_dur);  //fixation
 					break;
-					
-					case 3: // outcome
-                    if (resp == -1) { //no reward (too slow)
-                        rew = -1; 
-                        out += "-1,-1,-1";
-                        val = "0&#162" //display reward amount
-                        if (trial != num_trials-1) { out += ","; }
-                    }
-                    else {
-					val = rew.toFixed(0) + "&#162"//display reward amount
-					}
-					
-					if (resp == -2) { //non rewarded trial
-					out += "-2,-2,-2";
-                    if (trial != rew_trial.length-1) { out += ","; }
-					nextTrainingStep();
-					}
-					else {
-					$("#outcome").html("<big>" + val + "</big>");
-					$("#cues").hide();
-					$("#fix").center().hide();
-					$("#outcome").center().show();
-					setTimeout(nextTrainingStep, out_dur); //Show outcome for 1 seconds
-					}
-					break;
 
-					case 4: // ITI (1 s)
+					case 3: // ITI (1 s)
 					$("#outcome").hide();
 					$("#fix").center().show();
  					$("#cue").attr("src", cue_blk.src);
@@ -231,7 +198,6 @@
 			body { font: 100% "Trebuchet MS", sans-serif, white; background: black; }
             big { font: 200% "Trebuchet MS", sans-serif; color: white; }
             
-            }
 		</style>
 	</head>
 
