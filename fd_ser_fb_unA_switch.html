@@ -121,8 +121,7 @@
 			$(document).ready(function() {
                 $("#cues").hide();
                 $("#fix").hide();
-                $("#target_act").hide();
-                $("#target_wait").hide();
+                $("#target").hide();
                 $("#outcome").html("<big>Get ready...</big>");
 				$("#outcome").center().show();
 
@@ -173,17 +172,22 @@
 				if (waitTO == null && r.keyCode == "32")  //false alarm
 				{ 
 				false_alarms += String(trial_order[trial]) + ',' + String(tStep) + ','
+				bank = bank - rew
+				ignore_press = 1
 				}
 				else if (r.keyCode == "32") { //space bar
 				ignore_press = 1
 				clearTimeout(waitTO);
-				$("#target_act").center().hide();
-				$("#target_wait").center().show();
 				
-                rt = new Date().getTime() - rt;
-				rts.push(rt)
+				rt = new Date().getTime() - rt;
 				var rt_thresh_old = rt_thresh
-				if (rt < rt_thresh) { 
+
+				if (pre_resp == 1 ) { //responded before the target, always get reward
+					rt = rt * -1; //coding for the pre response
+				}
+				rts.push(rt)
+
+				if (pre_resp == 1 || rt < rt_thresh) { //if responded before threshold or responded in advance
                 rew = reward;
             	bank = bank + rew;
             	resp = r;
@@ -197,7 +201,8 @@
 				
                 out += rew.toFixed(2) + "," + rt + "," + rt_thresh_old.toFixed(2);
                 if (trial != rew_trial.length-1) { out += ","; } //append comma if not the last trial
-				setTimeout(nextTrainingStep, im_dur - rt);  //wait for rest of imdur before moving on to fixation
+				if (pre_resp == null) { setTimeout(nextTrainingStep, im_dur - rt); } //wait for rest of imdur before moving on to fixation
+				else if (pre_resp == 1){ setTimeout(nextTrainingStep, latency + rt);}  //wait for rest of imdur before moving on to fixation
 				}
 				
 			}
@@ -210,8 +215,7 @@
 					$("#outcome").html("<big>" + "Congratulations! You earned $" + bank + "</big>");
 					$("#cues").hide();
 					$("#fix").hide();
-					$("#target_act").hide();	
-					$("#target_wait").hide();			
+					$("#target").hide();	
 					$("#outcome").center().show();
 			
                     setTimeout(done, out_dur);
@@ -220,11 +224,13 @@
 				$("#cue").attr("src", cue_img[ trial_order[trial] ].src);
                 $("#cues").center().show();
 				$("#fix").hide();
-
+				
 				if (rew_trial[trial] == 1) { //rewarded trial
 				tStep = 0;
 				resp = -1;
-                setTimeout(nextTrainingStep, latency); //Pause 750ms and then start the rest of the trial
+				pre_resp = 1 //flag for determining when they respond
+				rt = new Date().getTime();
+                waitTO = setTimeout(nextTrainingStep, latency); //Pause and then start the rest of the trial
 				}
 				else { //non rewarded trial
 				tStep = 3;
@@ -243,10 +249,16 @@
 
 				switch (tStep) {
 					case 1: // response
-					$("#target_act").center().show();
-					resp = -1
-                    rt = new Date().getTime();
-					waitTO = setTimeout(nextTrainingStep, im_dur - latency); //1250 ms to respond				
+					pre_resp = null
+					$("#target").center().show();
+                    if (resp == -1) { //no response yet
+                    	rt = new Date().getTime();
+						waitTO = setTimeout(nextTrainingStep, im_dur - latency); //1250 ms to respond				
+					}
+					else { //already responded pre-target
+						waitTO = null;
+						setTimeout(nextTrainingStep, im_dur - latency);
+					}
 					break;
 
 					case 2: // feedback iti
@@ -259,8 +271,7 @@
 					else {
 					val = (rew*100).toFixed(0) + "&#162"//display reward amount
 					}
-					$("#target_act").hide();
-					$("#target_wait").hide();
+					$("#target").hide();
                		$("#fix").center().show();
 					$("#cue").attr("src", cue_blk.src);
 					setTimeout(nextTrainingStep, feedback_iti)
@@ -308,13 +319,7 @@
 				</div>
 		</div>
 		
-		<div id="target_act">
-				<div id="image">
-					<img style="height: 20%;" id="cue" src="/fd/pics/target_blue.jpg">
-				</div>
-		</div>
-		
-		<div id="target_wait">
+		<div id="target">
 				<div id="image">
 					<img style="height: 20%;" id="cue" src="/fd/pics/target_blue.jpg">
 				</div>
