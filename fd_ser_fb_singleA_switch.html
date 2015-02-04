@@ -20,7 +20,7 @@
             var bank = 0;
             var reward = .05;
             var out = ""; // this string will be saved on the server at the end of training
-            var num_trials_per_condition = 20
+            var num_trials_per_condition = 15
             var num_switched_trials = 5
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
             var rt_step_up = 10 //adjust size for thresholding
@@ -70,7 +70,7 @@
 				switch (cond[i]) {
 				case 1: //ser fp +
 				rew_trial = rew_trial.concat([0,1,0])
-				if (i >= num_trials_per_condition * cue_n){ trial_order = trial_order.concat([5,3,6]); }
+				if (i >= num_trials_per_condition * cue_n){ trial_order = trial_order.concat([1,3,6]); }
 				else { trial_order = trial_order.concat([1,2,6]); }
 				break;
 				
@@ -83,7 +83,7 @@
 				case 3:  //ser fn -
 				rew_trial = rew_trial.concat([0,0,0]);	
 				if (i >= num_trials_per_condition * cue_n) { trial_order = trial_order.concat([1,2,6]);}
-				else {trial_order = trial_order.concat([5,3,6]); }
+				else {trial_order = trial_order.concat([1,3,6]); }
 				break;
 
 				case 4: //ser fn +
@@ -203,7 +203,8 @@
                 if (trial != rew_trial.length-1) { out += ","; } //append comma if not the last trial
 				if (pre_resp == null) { setTimeout(nextTrainingStep, im_dur - rt); } //wait for rest of imdur before moving on to fixation
 				else if (pre_resp == 1){ setTimeout(nextTrainingStep, latency + rt);}  //wait for rest of imdur before moving on to fixation
-				}	
+				}
+				
 			}
 			
 			//Set up a trial with the correct cues in the correct location 
