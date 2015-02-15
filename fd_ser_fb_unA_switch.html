@@ -32,7 +32,7 @@
 			var im_dur = 2000; //image duration
             var latency = 500; //latency to target
             var out_dur =  4000; //outcome duration
-            var init_dur = 0//2500; //get ready duration
+            var init_dur = 2500; //get ready duration
             var scramble_dur = 1500; //scramble image duration
             var feedback_dur = 2000; // feedback duration
             var feedback_iti = 1000; // feedback iti duration
@@ -188,7 +188,6 @@
 			for (var i=0; i<cue_cb.length; i++) {
 				cue_img[i] = new Image();
 				cue_img[i].src = "/fd/pics/cue" + cue_cb[i] + ".jpg";
-				console.log(cue_img[i].src)
 			}
 
 			//preload images
@@ -314,7 +313,6 @@
 // 					$("#cue_right").show();
 //   					$("#background").center().show();	
 // 				}
-				console.log(trial_order[trial])
 				if (trial_order[trial] == 10) {//iti image
                 	$("#background").hide();
                 	$("#new_trial").show();
@@ -329,7 +327,6 @@
 					$("#cue_right").css('background','url(' + cue_img[ trial_order[trial] ].src +')');
 					$("#cue_left").css('background','url(' + scramble.src +')');}
 
-				
 					$("#cue_left").show();
 					$("#cue_right").show();
   					$("#background").show();	
@@ -476,9 +473,6 @@
 			}
 			#cue_left {
 				background-position: 4.6% center !important;
-			}
-			#cue {
-			 height: 60%;
 			}
 			#fix {
 				background-image: url("/fd/pics/fix_def.jpg");
