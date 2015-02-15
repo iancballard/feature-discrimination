@@ -20,8 +20,9 @@
             var bank = 0;
             var reward = .05;
             var out = ""; // this string will be saved on the server at the end of training
-            var num_trials_per_condition = 20
-            var num_switched_trials = 5
+            var num_trials_per_condition = 15
+            var num_block_trials = 5
+            var num_test_trials = 2
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
             var rt_step_up = 10 //adjust size for thresholding
             var rt_step_down = 20 //adjust size for thresholding
@@ -72,6 +73,10 @@
 				rew_trial = rew_trial.concat([0,1,0])
 				if (i >= num_trials_per_condition * cue_n){ trial_order = trial_order.concat([5,3,6]); }
 				else { trial_order = trial_order.concat([1,2,6]); }
+				
+				if (i < num_trials_per_condition * cue_n) { trial_order = trial_order.concat([1,2,6]); }
+				else if (i < num_trials_per_condition * cue_n + 3*num_block_trials) {trial_order = trial_order.concat([7,6]); }
+				else  {trial_order = trial_order.concat([1,2,6]); }
 				break;
 				
 				case 2: //ser fp -

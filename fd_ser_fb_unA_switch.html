@@ -20,34 +20,36 @@
             var bank = 0;
             var reward = .05;
             var out = ""; // this string will be saved on the server at the end of training
-            var num_trials_per_condition = 20
+            var num_trials_per_condition = 15
             var num_switched_trials = 5
+            var num_blocked_trials = 8
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
             var rt_step_up = 10 //adjust size for thresholding
             var rt_step_down = 20 //adjust size for thresholding
 			$.cookie('earnings',0); //Set cookie
 
 			//set experimental timing
-			var im_dur = 2500; //image duration
+			var im_dur = 250; //image duration
             var latency = 500; //latency to target
             var out_dur =  4000; //outcome duration
-            var init_dur = 2500; //get ready duration
+            var init_dur = 0//2500; //get ready duration
             var scramble_dur = 1500; //scramble image duration
             var feedback_dur = 2000; // feedback duration
             var feedback_iti = 1000; // feedback iti duration
 
             
-            //250 trials worth of itis generated from matlab. Poisson, mean 4s, min 2s, max 12s
+            //250 trials worth of itis generated from matlab. Poisson, mean 4s, min 2s, max 12s. 
             var iti_dur = [6,3,6,4,3,3,3,7,3,3,3,5,5,6,7,8,3,4,3,3,6,5,6,6,2,2,4,3,3,3,6,4,7,3,4,4,6,5,5,5,3,6,7,6,7,6,4,3,4,9,3,7,6,6,2,6,3,6,6,4,3,4,4,3,6,4,4,3,5,5,7,6,2,6,3,4,3,4,5,2,6,3,3,3,5,5,9,2,4,2,4,5,4,6,3,5,2,4,4,8,2,4,7,4,4,4,6,3,5,4,3,5,5,8,3,4,5,3,5,8,2,5,3,3,4,4,6,9,3,4,4,6,2,5,5,3,3,5,5,5,6,3,3,5,2,5,3,5,8,6,5,7,4,3,5,4,6,4,5,4,7,5,7,3,4,6,4,3,2,6,4,4,2,2,5,2,3,4,3,2,4,5,5,6,4,3,4,5,3,3,4,4,2,5,5,4,2,3,3,5,5,4,5,3,6,3,7,7,2,2,5,4,4,4,3,3,2,3,6,3,2,5,2,4,2,4,7,8,2,5,3,3,4,5,6,2,2,5,6,3,4,5,3,6,2,5,5,4,6,8,4,3,4,5,3,4,5,4,3,5,5,3,5,3,5,7,6,4,5,2,7,4,7,9,4,4,3,5,2,4,2,4,2,2,2,6,2,3,4,3,4,5,6,7,6,3,9,4,4,2,3,5,6,5,2,2,3,4,2,5,6,4,3,6,4,4,2,3,5,3,4,4,6,4,3,7,6,3,2,2,3,5,5,5,4,3,3,6,5,7,4,5,5,6,6,6,4,4,7,5,4,2,4,2,2,3,5,4,2,6,2,5,5,3,2,4,3,6,6,7,2,3,4,4,3,4,6,7,3,6,4,2,2,4,2,7,4,4,3,4,7,3,5,4,4,4,4,7,3,4,3,2,3,5,8,3,4,3,11,4,5,2,6,2,3,6,4,7,4,10,4,4,3,5,4,4,4,5,5,2,4,5,4,4,8,3,4,2,4,7,6,4,4,6,3,2,6,6,5,5,3,2,5,9,6,3,6,4,5,4,6,4,5,6,6,4,9,2,2,7,4,2,7,5,4,4,4,5,5,5,3,4,9,10,4,3,8,6,5,4,4,2,4,6,6,5,7,4,6,5,3,8,5,6,3,2,8,3,5,4,4,6,8,2,3,2,5,3,8,9,2,3,7,4,4,2,3,4,4,3,5,4,4,4,5,3,2,6,6,3,5,10,4,6,6,3,3,6,6,5,7,2,3,5,6,3,4,9,8,3,4,4,4,5,6,4,2,6,7,5,4,8,4,5,7,4,2,6,7,2,7,3,3,5,6,5,4,7,2,5,4,5,4,5,5,4,2,3,6,3,5,2,7,3,4,3,2,5,3,4,3,5,2,4,4,6,5,7,3,9,4,5,3,5,9,4,5,5,3,5,4,5,5,4,4,3,5,2,7,4,3,2,5,4,2,2,4,8,2,3,7,4,3,7,5,4,5,4,4,4,6,4,6,3,5,3,2,2,5,4,3,3,3,2,5,7,4,4,3,3,6,4,2,6,2,3,3,6,3,4,4,3,2,9,4,6,6,3,3,7,5,6,5,3,3,5,6,5,3,6,4,3,3,3,6,2,2,6,5,3,4,5,3,4,4,5,5,8,3,5,3,3,5,3,3,2,3,4,4,4,5,7,3,4,8,4,4,4,7,2,2,9,4,4,4,4,3,4,3,2,4,8,5,12,4,2,10,4,5,2,6,2,4,3,7,7,2,2,5,5,7,4,8,4,4,2,4,3,6,5,3,5,4,5,3,3,5,5,2,7,5,3,4,4,5,2,4,8,6,3,9,3,2,4,3,6,4,2,4,4,7,5,3,4,3,4,3,5,4,2,7,2,4,6,4,5,5,2,3,7,7,4,3,2,6,2,7,4,5,4,3,7,4,7,7,6,6,6,2,3,2,5,4,4,2,2,2,2,9,3,2,5,2,3,2,6,6,3,5,4,2,7,6,3,5,3,2,6,3,7,3,7,4,5,7,7,6,3,2,2,3,6,8,2,5,3,3,2,4,2,5,3,3,2,3,3,9,4,5,2,5,2,3,3,5,5,2,4,2,8,6,6,4,4,3,3,5,7,4,4,6,4,3,4,5,3,4,5,4,6,2,2,4,4,6,5,4,3,4,3,7,4,5,7,4,2,3,8,3,4,2,2,4,3,6,10,2,6,2,5,3,3,5,5,3,5,6,5,5,4,8,2,2,2,2,6,7,3,5,2];
             var iti_scramble_dur = [2,3,3,2,5,4,4,3,3,2,3,2,3,3,5,2,4,3,3,2,3,4,3,2,2,2,2,3,4,3,3,5,2,6,2,3,2,2,4,2,3,2,2,2,2,2,2,2,3,3,2,2,2,3,4,2,5,3,2,2,3,4,2,3,2,3,2,3,3,5,2,5,2,6,2,3,4,2,3,2,3,2,5,4,3,4,4,2,2,2,2,3,4,3,4,2,2,2,2,4,2,3,4,3,3,5,2,2,2,3,4,5,4,3,3,4,3,2,4,2,4,2,2,2,5,3,2,6,3,4,5,3,2,2,3,2,4,2,2,4,2,3,3,2,2,5,4,2,2,4,4,2,2,2,2,3,4,3,4,4,3,2,2,5,2,2,3,3,3,2,3,4,3,3,2,5,2,4,2,2,5,3,4,4,3,3,2,2,3,3,3,3,2,2,2,2,2,2,2,2,3,5,3,4,3,2,3,4,3,3,2,2,6,2,3,4,2,5,3,3,3,2,3,2,2,2,4,2,4,4,2,3,3,2,2,4,2,4,2,2,4,3,3,2,2,2,4,3,4,3,3,2,2,2,2,3,4,2,3,5,3,3,2,2,5,2,4,3,3,3,3,3,4,2,4,2,2,3,4,2,2,2,3,2,4,3,2,3,3,2,2,3,4,4,2,2,2,2,6,4,3,4,2,3,2,2,2,2,2,2,4,4,3,2,3,5,3,2,2,3,6,2,2,3,2,3,2,3,2,2,3,3,3,2,4,3,2,3,3,2,3,4,2,5,2,4,3,4,4,4,2,3,2,2,3,3,2,4,3,3,2,2,4,3,3,6,3,5,3,2,3,4,3,2,4,5,2,4,2,2,2,3,6,3,4,3,3,5,2,2,2,4,2,2,2,5,2,3,2,5,3,3,2,3,4,2,3,4,6,2,4,2,3,2,3,4,2,2,2,3,3,2,3,3,4,2,2,4,2,2,3,2,3,2,5,2,2,2,3,3,2,3,4,2,2,3,2,5,3,3,2,2,4,3,3,4,5,3,3,4,5,2,2,3,5,2,2,4,3,2,6,2,2,2,5,3,3,2,2,2,4,2,4,2,2,2,3,3,4,3,5,4,3,3,2,2,4,2,4,3,4,2,2,6,5,2,3,4,3,4,4,2,4,4,2,3,4,3,2,3,2,4,2,4,2,2,3,2,3,4,4,3,3,2,5,3,2,4,3,3,3,3,2,2,5,3,3,4,3,2,5,2,2,4,5,3,2,4,5,3,3,4,3,3,2,5,2,6,3,2,2,2,2,5,5,3,2,2,4,3,2,3,2,2,2,2,4,3,2,5,2,4,3,6,2,5,2,2,4,3,6,3,2,3,4,2,2,3,3,4,2,4,3,2,5,2,3,5,3,3,2,2,2,3,2,2,2,5,4,4,2,2,3,3,2,2,4,2,3,3,3,4,2,2,2,4,6,3,2,2,4,3,5,2,6,2,2,3,2,2,2,2,3,4,2,4,4,2,2,2,3,2,3,2,2,3,2,4,5,5,2,2,2,2,2,4,2,3,2,2,3,2,3,4,4,2,2,2,4,4,3,2,2,2,3,4,2,3,2,2,2,2,2,5,3,2,4,6,2,3,3,3,2,5,2,2,3,3,5,2,2,4,4,4,3,3,2,4,3,3,3,5,4,3,2,3,2,3,3,4,4,4,3,2,3,4,2,5,2,4,2,3,3,3,6,3,2,2,3,2,4,3,3,4,2,4,2,3,4,3,3,2,2,4,4,3,5,2,2,3,2,2,4,3,2,3,2,2,2,4,3,3,2,2,4,2,2,2,3,2,3,4,3,3,4,4,2,3,2,3,2,3,3,2,2,2,2,4,3,4,4,3,2,3,2,2,3,2,4,3,3,2,3,2,3,3,2,4,2,2,2,2,2,5,2,2,3,2,2,2,3,5,2,2,3,2,2,2,3,3,3,4,4,2,3,3,2,4,3,2,2,2,3,2,5,2,4,2,2,2,3,5,4,3,2,2,2,2,2,2,3,2,5,4,4,4,2,3,3,5,4,2,3,2,2,3,4,2,3,3,3,2,2,2,5,2,4,2,3,5,4,5,2,3,3,2,2,3,4,2,4,2,2,3,2,2,3,3,2,4,2,3,2,4,3,2,2,3,2,2,3,3,4,4,3,3,3,3,2,3,2,4,2,2,4,2,2,4,2,3,4,5,2,2,2,3,5,3,2,2,3,2,2,3,3,2,2,2,2,3];
 // 			var iti_dur = [1.44, 1.68, 1.48, 1.33, 1.24, 1.97, 1.91, 1.37, 1.22, 1.85, 1.68, 1.94, 1.09, 1.59, 1.26, 1.34, 1.39, 1.93, 1.19, 1.87, 1.49, 1.95, 1.69, 1.83, 1.79, 1.62, 1.11, 1.11, 1.06, 1.8, 1.85, 1.13, 1.3, 1.98, 1.74, 1.93, 1.04, 1.9, 1.51, 1.66, 1.0, 1.16, 1.6, 1.6, 1.93, 1.88, 1.78, 1.88, 1.81, 1.12, 1.22, 1.53, 1.82, 1.07, 1.24, 1.55, 1.9, 1.22, 1.6, 1.01, 1.23, 1.79, 1.66, 1.88, 1.21, 1.47, 1.71, 1.94, 1.11, 1.03, 1.9, 1.72, 1.09, 1.81, 1.82, 1.86, 1.32, 1.51, 1.13, 1.81, 1.7, 1.42, 1.91, 1.23, 1.88, 1.01, 1.41, 1.34, 1.35, 1.76, 1.48, 1.34, 1.96, 1.23, 1.03, 1.82, 1.42, 1.93, 1.64, 1.73, 1.26, 1.9, 1.64, 1.25, 1.93, 1.1, 1.09, 1.34, 1.64, 2.0, 1.94, 1.81, 1.04, 1.91, 1.7, 1.5, 1.29, 1.87, 1.12, 1.13, 1.48, 1.2, 1.33, 1.89, 1.64, 1.86, 1.94, 1.74, 1.43, 1.19, 1.9, 1.83, 1.61, 1.92, 1.01, 1.39, 1.36, 1.13, 1.78, 1.27, 1.17, 1.22, 1.48, 1.33, 1.39, 1.49, 1.47, 1.87, 1.61, 1.32, 1.67, 1.05, 1.88, 1.1, 1.65, 1.7, 1.77, 1.42, 1.26, 1.47, 1.79, 1.23, 1.33, 1.59, 1.21, 1.1, 1.21, 1.3, 1.43, 1.67, 1.35, 1.5, 1.33, 1.37, 1.12, 1.14, 1.81, 1.35, 1.98, 1.16, 1.87, 1.43, 1.89, 1.44, 1.03, 1.22, 1.38, 1.24, 1.79, 1.79, 1.81, 1.68, 1.15, 1.92, 1.57, 1.27, 1.62, 1.82, 1.78, 1.99, 1.59, 1.9, 1.18, 1.89, 1.37, 1.41, 1.47, 1.2, 1.4, 1.23, 1.29, 1.2, 1.56, 1.87, 1.37, 1.32, 1.69, 1.72, 1.42, 1.28, 1.64, 1.41, 1.83, 1.68, 1.22, 1.28, 1.92, 1.88, 1.85, 1.85, 1.84, 1.44, 1.67, 1.77, 1.06, 1.45, 1.88, 1.14, 1.6, 1.21, 1.08, 1.94, 1.61, 1.81, 1.49, 1.13, 1.58, 1.85, 1.59, 1.2, 1.02, 1.56, 1.06, 1.33, 1.29, 1.92, 1.12, 1.06, 1.69, 1.27, 1.01, 1.39, 1.23, 1.28, 1.48, 1.47, 1.8, 1.07, 1.1, 1.61, 1.46, 1.49, 1.07, 1.99, 1.08, 1.73, 1.16, 1.29, 1.4, 1.23, 1.81, 1.6, 1.53, 1.69, 1.03, 1.27, 1.83, 1.65, 1.6, 1.6, 1.31, 1.04, 1.81, 1.95, 1.93, 1.87, 1.72, 1.13, 1.13, 1.5, 1.78, 1.81, 1.1, 1.72, 1.0, 1.96, 1.55, 1.72, 1.27, 1.23, 1.85, 1.05, 1.38, 1.76, 1.45, 1.72, 1.18, 1.09, 1.17, 1.13, 1.67, 1.78, 1.98, 1.87, 1.64, 1.55, 1.4, 1.08, 1.28, 1.89, 1.8, 1.22, 1.54, 1.17, 1.97, 1.37, 1.7, 1.64, 1.92, 1.9, 1.21, 1.52, 1.11, 1.03, 1.19, 1.66, 1.47, 1.22, 1.24, 1.39, 1.98, 1.03, 1.23, 1.04, 1.06, 1.97, 1.28, 1.22, 1.4, 1.86, 1.49, 1.56, 1.8, 1.84, 1.22, 1.68, 1.57, 1.67, 1.8, 1.22, 1.63, 1.71, 1.5, 1.97, 1.72, 1.3, 1.66, 1.56, 1.59, 1.93, 1.84, 1.45, 1.15, 1.23, 1.17, 1.39, 1.22, 1.44, 1.98, 1.99, 1.65, 1.51, 1.48, 1.98, 1.38, 1.15, 1.59, 1.56, 1.14, 1.01, 1.27, 1.01, 1.44, 1.4, 1.59, 1.08, 1.18, 1.88, 1.47, 1.73, 1.14, 1.12, 1.21, 1.96, 1.66, 1.49, 1.58, 1.08, 1.67, 1.77, 1.09, 1.34, 1.51, 1.8, 1.07, 1.09, 1.7, 1.99, 1.52, 1.08, 1.11, 1.57, 1.88, 1.96, 1.68, 1.69, 1.41, 1.89, 1.1, 1.08, 1.47, 1.35, 1.24, 1.62, 1.22, 1.66, 1.47, 1.46, 1.46, 1.15, 1.03, 1.33, 1.98, 1.95, 1.33, 1.83, 1.18, 1.34, 1.42, 1.35, 1.18, 1.25, 1.11, 1.51, 1.48, 1.55, 1.13, 1.96, 1.97, 1.75, 1.32, 1.45, 1.17, 1.33, 1.59, 1.61, 1.42, 1.24, 1.1, 1.09, 1.04, 1.27, 1.37, 1.56, 1.29, 1.78, 1.33, 1.28, 1.32, 1.75, 1.29, 1.32, 1.64, 1.55, 1.99, 1.94, 1.98, 1.98, 1.37, 1.33, 1.57, 1.15, 1.62, 1.42, 1.19, 1.1, 1.89, 1.12, 1.88, 1.51, 1.64, 1.89, 1.46, 1.27, 1.65, 1.33, 1.87, 1.59, 1.39, 1.08, 1.34, 1.81, 1.68, 1.02, 1.94, 1.83, 1.4, 1.57, 1.69, 1.47, 1.57, 1.07, 1.09, 1.8, 1.26, 1.39, 1.37, 1.21, 1.14, 1.94, 1.62, 1.16, 1.68, 1.92, 1.06, 1.15, 1.18, 1.64, 1.96, 1.41, 1.45, 1.45, 1.31, 1.52, 1.02, 1.48, 1.32, 1.62, 1.18, 1.05, 1.47, 1.11, 1.82, 1.45, 1.89, 1.74, 1.77, 1.35, 1.91, 1.12, 1.91, 1.79, 1.13, 1.06, 1.73, 1.59, 1.53, 1.19, 1.43, 1.84, 1.37, 1.27, 1.27, 1.16, 1.45, 1.78, 1.54, 1.21, 1.29, 1.87, 1.28, 1.53, 1.62, 1.73, 1.13, 1.58, 1.68, 1.86, 1.41, 1.31, 1.72, 1.3, 1.29, 1.45, 1.88, 1.65, 1.06, 1.09, 1.86, 1.28, 1.06, 1.55, 1.77, 1.16, 1.86, 1.82, 1.1, 1.69, 1.02, 1.21, 1.06, 1.33, 1.11, 1.35, 1.89, 1.67, 1.81, 1.25, 1.81, 1.92, 1.11, 1.95, 1.49, 1.67, 1.27, 1.77, 1.65, 1.26, 1.71, 1.74, 1.14, 1.16, 1.84, 1.62, 1.55, 1.97, 1.94, 1.52, 1.68, 1.49, 1.07, 1.98, 1.45, 1.0, 1.58, 1.69, 1.33, 1.29, 1.48, 1.28, 1.72, 1.07, 1.39, 1.27, 1.28, 1.59, 1.88, 1.95, 1.14, 1.32, 1.2, 1.46, 1.28, 1.97, 1.03, 1.85, 1.41, 1.47, 1.33, 1.19, 1.67, 1.49, 1.28, 1.89, 1.31, 1.63, 1.27, 1.66, 1.42, 1.16, 1.02, 1.93, 1.22, 1.42, 1.08, 1.94, 1.14, 1.86, 1.42, 1.41, 1.41, 1.95, 1.98, 1.85, 1.49, 1.4, 1.83, 1.26, 1.38, 1.21, 1.95, 1.12, 1.07, 1.32, 1.55, 1.41, 1.55, 1.46, 1.25, 1.31, 1.02, 1.08, 1.56, 1.45, 1.62, 1.69, 1.34, 1.09, 1.87, 1.71, 1.94, 1.28, 1.03, 1.24, 1.32, 1.82, 1.16, 1.59, 1.91, 1.95, 1.58, 1.16, 1.13, 1.72, 1.98, 1.58, 1.78, 1.05, 1.97, 1.89, 1.51, 1.3, 1.75, 1.6, 1.85, 1.19, 1.81, 1.54, 1.08, 1.92, 1.62, 1.96, 1.68, 1.33, 1.42, 1.31, 1.69, 1.96, 1.21, 1.84, 1.5, 1.18, 1.28, 1.56, 1.45, 1.64, 1.27, 1.58, 1.16, 1.61, 1.78, 1.11, 1.03, 1.63, 1.3, 1.72, 1.19, 1.7, 1.53, 1.14, 1.84, 1.79, 1.35, 1.39, 1.03, 1.64, 1.58, 1.9, 1.06, 1.67, 1.78, 1.86, 1.54, 1.23, 1.04, 1.55, 1.09, 1.32, 1.85, 1.99, 1.3, 1.53, 1.97, 1.66, 1.41, 1.73, 1.56, 1.83, 1.07, 1.86, 1.4, 1.69, 1.6, 1.86, 1.5, 1.95, 1.65, 1.54, 1.08, 1.64, 1.46, 1.66, 1.51, 1.54, 1.53, 1.37, 1.83, 1.35, 1.2, 1.88, 1.22, 1.36, 1.84, 1.67, 1.59, 1.53, 1.26, 1.63, 1.02, 1.13, 1.18, 1.46, 1.75, 1.52, 1.55, 1.15, 1.66, 1.9, 1.95, 1.99, 1.38, 1.55, 1.5, 1.39, 1.98, 1.34, 1.13, 1.01, 1.07, 1.34, 1.97, 1.73, 1.84, 1.08, 1.14, 1.5, 1.6, 1.24, 1.5, 1.2, 1.28, 1.52, 1.02, 1.04, 1.8, 1.5, 1.74, 1.78, 1.56, 1.74, 1.75, 1.66, 1.64, 1.37, 1.26, 1.64, 1.8, 1.28, 1.07, 1.6, 1.96, 1.93, 1.21, 1.73, 1.54, 1.39, 1.14, 1.34, 1.44, 1.98, 1.66, 1.69, 1.55, 1.3, 1.61, 1.95, 1.96, 1.16, 1.1, 1.14, 1.51, 1.59, 1.01, 1.41, 1.51, 1.43, 1.13, 1.05, 1.18, 1.8, 1.77, 1.19, 1.58, 1.17, 1.49, 1.29, 1.46, 1.57, 1.53, 1.21, 1.4, 1.0, 1.96, 2.0, 1.93, 1.96, 1.32, 1.81, 1.81, 2.0, 1.66, 1.15, 1.77, 1.74, 1.9, 1.43, 1.03, 1.02, 1.52, 1.63, 1.84, 1.39, 1.82, 1.69, 1.35, 1.69, 1.88, 1.31, 1.22, 1.3, 1.39, 1.24, 1.27, 1.02, 1.65, 1.42, 1.21, 1.35, 1.44, 1.08, 1.93, 1.75, 1.88, 1.64, 1.91, 1.89, 1.24, 1.61, 1.24, 1.58, 1.94, 1.07, 1.8, 1.63, 1.93, 1.53, 1.58, 1.21, 1.81, 1.01];
 // 			var iti_scramble_dur = [0.93, 0.5, 0.75, 0.81, 1.11, 1.07, 1.5, 1.01, 0.71, 1.18, 0.62, 1.21, 1.03, 1.01, 0.67, 0.9, 0.92, 0.83, 1.11, 1.37, 1.32, 0.63, 1.12, 1.3, 1.35, 0.97, 1.07, 1.38, 0.68, 0.81, 1.39, 1.0, 1.07, 1.39, 0.62, 1.23, 1.29, 1.23, 0.69, 0.75, 0.67, 0.88, 0.54, 0.98, 0.95, 1.14, 0.92, 1.38, 0.64, 0.91, 0.95, 1.12, 0.64, 1.32, 0.62, 1.5, 0.83, 1.21, 1.45, 1.06, 1.47, 1.47, 0.72, 0.67, 1.21, 0.98, 1.12, 0.89, 0.85, 1.11, 0.53, 1.42, 0.81, 1.27, 1.36, 0.54, 1.31, 0.57, 1.23, 1.47, 1.23, 1.39, 1.13, 1.43, 0.99, 1.11, 1.12, 1.24, 0.56, 0.73, 0.87, 1.47, 1.45, 0.93, 0.94, 0.61, 1.29, 1.11, 0.96, 0.96, 1.03, 1.1, 1.05, 0.54, 1.28, 0.86, 0.54, 0.74, 0.57, 1.46, 1.25, 1.28, 1.1, 0.76, 1.24, 1.26, 0.98, 0.95, 1.09, 1.05, 0.97, 1.38, 0.62, 0.97, 1.28, 1.03, 0.86, 0.9, 1.04, 0.62, 1.18, 0.83, 0.54, 1.06, 0.63, 0.57, 1.17, 0.58, 1.23, 1.49, 0.9, 1.33, 1.24, 1.09, 0.61, 0.95, 0.51, 1.45, 1.16, 0.93, 0.97, 1.3, 0.77, 0.53, 1.33, 0.96, 0.68, 0.73, 0.96, 1.2, 1.12, 1.15, 0.68, 1.21, 1.18, 0.66, 0.5, 0.78, 1.49, 1.29, 0.99, 0.84, 1.38, 1.18, 1.43, 1.09, 1.35, 1.35, 1.38, 1.27, 0.94, 0.87, 1.3, 1.1, 1.01, 1.02, 0.64, 0.99, 1.09, 0.56, 1.18, 1.38, 0.93, 1.27, 0.78, 0.85, 1.15, 1.36, 1.33, 1.32, 0.78, 1.45, 0.52, 1.13, 0.52, 1.43, 0.67, 1.22, 0.55, 1.23, 0.67, 1.06, 1.46, 0.59, 0.79, 0.65, 0.85, 0.9, 1.42, 1.18, 1.19, 0.76, 0.97, 0.8, 0.65, 0.54, 0.55, 0.94, 1.11, 0.76, 0.71, 0.66, 1.23, 1.38, 0.53, 0.84, 1.21, 1.09, 0.71, 0.81, 1.41, 1.29, 1.17, 1.29, 0.84, 0.83, 1.18, 0.53, 0.98, 1.23, 0.83, 1.26, 0.93, 0.68, 1.24, 1.07, 1.39, 1.08, 1.39, 0.76, 1.34, 0.93, 0.53, 1.5, 0.51, 1.16, 0.54, 1.37, 1.37, 1.31, 1.11, 1.43, 1.01, 1.47, 1.46, 1.46, 1.28, 0.89, 1.21, 0.8, 0.8, 0.95, 1.08, 0.76, 1.01, 1.21, 0.72, 0.53, 1.39, 1.26, 1.2, 0.83, 1.31, 1.31, 0.63, 0.78, 0.9, 0.87, 0.76, 1.3, 1.1, 0.68, 0.65, 0.73, 1.23, 1.31, 0.97, 1.48, 0.83, 1.34, 0.74, 0.69, 1.23, 0.89, 0.69, 1.03, 1.5, 1.22, 0.86, 1.24, 1.28, 0.61, 0.86, 1.04, 1.49, 1.43, 1.11, 1.2, 1.42, 0.76, 0.78, 0.97, 0.52, 1.29, 0.76, 1.35, 1.26, 0.86, 1.38, 1.28, 0.92, 1.26, 1.09, 1.04, 1.19, 1.28, 0.98, 0.57, 0.98, 0.62, 0.76, 1.0, 0.91, 1.3, 1.04, 1.17, 1.01, 1.1, 0.59, 1.08, 0.58, 0.94, 1.29, 0.66, 1.44, 0.97, 1.41, 1.04, 0.68, 0.81, 1.46, 0.91, 1.46, 0.67, 0.73, 1.48, 1.13, 1.06, 1.26, 1.2, 1.44, 0.89, 1.15, 0.99, 0.5, 0.91, 1.47, 1.02, 1.12, 0.87, 0.82, 1.02, 0.96, 0.74, 0.59, 0.63, 1.3, 0.53, 0.65, 1.48, 1.09, 0.57, 0.57, 1.33, 0.72, 0.82, 0.76, 0.9, 0.78, 0.92, 1.06, 0.86, 0.84, 0.68, 1.03, 1.15, 0.52, 0.83, 1.0, 1.04, 0.56, 0.55, 0.64, 1.05, 1.12, 1.49, 0.84, 0.99, 0.94, 0.99, 1.13, 1.39, 0.65, 0.58, 1.48, 1.26, 1.3, 0.59, 0.51, 0.7, 0.57, 1.33, 1.31, 1.07, 1.24, 0.64, 1.44, 0.68, 0.59, 1.06, 1.13, 0.74, 0.87, 0.88, 0.63, 0.77, 0.82, 1.22, 1.36, 1.44, 0.78, 1.16, 1.36, 1.33, 0.89, 1.32, 0.67, 1.34, 1.21, 1.47, 0.64, 1.26, 1.35, 0.99, 0.87, 1.15, 1.1, 1.28, 0.88, 0.99, 1.05, 1.4, 0.97, 1.48, 0.65, 1.37, 1.0, 1.18, 1.24, 1.31, 1.1, 1.13, 1.35, 1.18, 0.69, 0.77, 1.1, 1.41, 0.92, 0.74, 0.85, 1.07, 1.33, 1.11, 0.95, 1.06, 0.81, 0.78, 0.54, 0.91, 1.2, 0.57, 0.83, 1.3, 0.98, 1.46, 1.48, 1.06, 1.13, 0.98, 1.29, 1.31, 1.3, 1.2, 0.73, 1.29, 1.33, 1.09, 1.42, 1.21, 0.67, 0.84, 1.23, 0.93, 0.72, 1.35, 1.43, 0.59, 0.89, 0.6, 1.42, 0.83, 0.96, 1.28, 1.37, 0.92, 0.84, 0.6, 1.44, 1.33, 1.2, 1.04, 1.06, 1.28, 0.61, 1.2, 1.46, 1.09, 0.96, 0.73, 1.13, 1.4, 1.29, 0.94, 0.77, 0.7, 1.49, 1.46, 1.1, 0.6, 1.45, 0.91, 0.7, 1.05, 1.35, 1.11, 0.74, 1.02, 0.74, 1.47, 1.29, 0.91, 1.43, 0.91, 1.12, 1.34, 1.09, 1.0, 1.33, 1.35, 0.84, 1.2, 1.06, 1.23, 0.68, 1.21, 1.34, 0.9, 1.16, 1.47, 1.47, 0.62, 0.7, 0.76, 1.35, 1.03, 1.2, 1.48, 1.07, 0.71, 0.64, 1.17, 0.76, 1.22, 1.25, 1.12, 1.11, 0.99, 1.01, 1.43, 1.45, 0.5, 0.76, 1.37, 1.16, 0.67, 1.3, 1.26, 0.62, 0.51, 1.39, 0.81, 1.09, 0.93, 0.78, 1.26, 0.83, 0.86, 0.66, 1.35, 1.24, 1.39, 0.57, 1.47, 0.7, 1.14, 0.77, 1.35, 0.71, 1.17, 0.87, 0.99, 0.64, 1.42, 0.8, 0.65, 1.18, 0.76, 1.1, 0.78, 0.52, 1.17, 0.85, 0.67, 0.61, 1.43, 1.33, 0.54, 0.67, 0.64, 0.94, 1.19, 0.69, 0.88, 1.15, 1.23, 1.44, 1.03, 0.84, 0.75, 1.34, 0.83, 0.5, 0.67, 0.95, 1.36, 0.92, 0.83, 0.62, 0.53, 0.68, 0.54, 1.3, 0.76, 1.37, 1.23, 0.6, 0.88, 1.29, 0.76, 0.64, 0.77, 1.03, 0.97, 0.5, 0.79, 0.69, 0.82, 0.6, 1.21, 0.53, 0.93, 1.36, 1.15, 0.99, 1.24, 0.93, 0.75, 0.88, 0.66, 0.61, 1.09, 1.15, 1.31, 1.46, 1.42, 0.88, 1.05, 0.96, 0.54, 1.28, 0.89, 0.77, 1.17, 1.14, 0.93, 0.56, 0.92, 0.69, 0.75, 0.97, 1.37, 0.51, 1.18, 0.92, 1.27, 0.72, 1.28, 1.12, 1.04, 0.88, 1.44, 0.51, 0.7, 1.42, 0.53, 1.12, 0.9, 0.82, 0.82, 0.65, 1.29, 0.59, 0.66, 1.35, 1.04, 0.59, 0.67, 0.77, 0.9, 0.54, 1.03, 1.3, 1.12, 1.09, 1.35, 1.41, 0.84, 1.22, 0.93, 0.66, 0.6, 1.35, 0.96, 1.19, 1.29, 0.61, 1.18, 1.18, 1.41, 1.31, 0.5, 0.99, 0.68, 0.72, 1.34, 1.45, 1.28, 1.42, 1.17, 0.62, 1.32, 0.76, 1.36, 0.7, 0.63, 0.82, 0.56, 1.36, 1.1, 1.36, 0.87, 0.72, 1.19, 1.35, 1.45, 0.51, 0.9, 1.37, 1.27, 1.05, 0.5, 1.0, 1.26, 1.02, 0.75, 1.2, 1.16, 0.71, 0.61, 1.07, 1.06, 1.16, 0.75, 0.87, 0.86, 1.43, 0.65, 0.9, 1.07, 1.2, 0.74, 0.79, 0.65, 1.44, 0.73, 1.19, 1.06, 1.27, 1.44, 1.07, 0.7, 1.0, 1.35, 1.13, 1.21, 0.69, 0.61, 1.45, 0.84, 0.55, 1.2, 1.08, 1.07, 0.7, 1.08, 1.0, 0.57, 1.25, 0.96, 1.22, 1.32, 1.26, 0.65, 0.68, 0.71, 0.71, 0.83, 1.21, 0.5, 1.19, 0.77, 0.75, 1.38, 1.35, 1.4, 1.3, 0.74, 0.52, 0.91, 1.37, 1.31, 1.31, 1.46, 0.77, 1.14, 0.69, 0.95, 1.37, 0.5, 0.59, 1.22, 1.15, 0.88, 1.12, 0.96, 1.26, 1.31, 0.78, 1.03, 0.82, 0.81, 0.95, 1.11, 1.28, 0.7, 1.34, 1.07, 1.41, 1.08, 1.41, 0.77, 0.51, 1.16, 0.97, 1.37, 0.97, 0.95, 1.21, 0.84, 1.09, 0.73, 0.76, 0.85, 1.38, 0.87, 0.69, 1.14, 1.19, 1.35, 1.19, 0.87, 1.23, 0.74, 0.67, 0.88, 0.7, 0.9, 0.58, 0.98, 0.77, 0.75, 1.26, 1.2, 1.29, 0.92, 0.94, 0.7, 0.97, 1.2, 1.13, 1.16, 0.97, 1.11, 1.09, 1.19, 1.02, 1.37, 0.75, 0.59, 0.8, 0.88, 0.72, 0.88, 0.64, 1.12, 1.19, 1.22, 0.96, 1.1, 1.01, 1.23, 1.35, 1.32, 0.64, 1.33, 0.99, 0.69, 0.63, 1.28, 0.83, 0.69, 1.36, 1.06, 0.89, 0.95, 1.49, 1.06, 0.86, 0.63];
 			for (var i = 0; i < iti_dur.length; i++) {
-				iti_dur[i] = iti_dur[i]*500
-				iti_scramble_dur[i] = iti_scramble_dur[i]*500
+				iti_dur[i] = iti_dur[i]*5
+				iti_scramble_dur[i] = iti_scramble_dur[i]*5
 			}
 			shuffle(iti_dur)
 			shuffle(iti_scramble_dur)
+			
 			
 			//set up trial order
 			var cond_arr = [1,2,3,4,5]
@@ -57,75 +59,168 @@
 			shuffle(cond);
 			
 			//add 5 shuffled trials of each condition. Needs to be separate to ensure all 20 iterations have happened
-			cond2 = []
-			for (var i = 0; i < num_switched_trials; i++) {cond2 = cond2.concat(cond_arr)}
-			shuffle(cond2);
-			
-			cond = cond.concat(cond2); //add switched trials at the end
+// 			cond2 = []
+// 			for (var i = 0; i < num_switched_trials; i++) {cond2 = cond2.concat(cond_arr)}
+// 			shuffle(cond2);
+// 			cond = cond.concat(cond2); //add switched trials at the end
 
+			//add blocking trials at the end
+			var cond2 = []
+			var cond3 = [10, 11]
+			var block_arr = [6, 7, 8, 8] //Twice as many negative trials to equate experience
+			for (var i = 0; i < num_blocked_trials; i++) {cond2 = cond2.concat(block_arr)}
+			shuffle(cond2);
+			shuffle(cond3);
+			cond = cond.concat(cond2);
+			cond = cond.concat(cond3);
+			
+			//create flag array for block trials
+			var block_trial = [];
+			for (var i = 0; i < cond.length; i++) {
+				if (i < cue_n * num_trials_per_condition){
+					block_trial.push(0);}
+				else {
+					block_trial.push(1);}
+			}
+			
+			
 			var trial_order = [];
 			var rew_trial = []; //determines whether trial is rewarded
+// 			for (var i = 0; i < cond.length; i++) {		
+// 
+// 				switch (cond[i]) {
+// 				case 1: //ser fp +
+// 				rew_trial = rew_trial.concat([0,1,0])
+// 				if (i >= num_trials_per_condition * cue_n){ trial_order = trial_order.concat([5,3,6]); }
+// 				else { trial_order = trial_order.concat([1,2,6]); }
+// 				break;
+// 				
+// 				case 2: //ser fp -
+// 				rew_trial = rew_trial.concat([0,0])
+// 				if (i >= num_trials_per_condition * cue_n) {trial_order = trial_order.concat([3,6]);}
+// 				else {trial_order = trial_order.concat([2,6]);}	
+// 				break;
+// 
+// 				case 3:  //ser fn -
+// 				rew_trial = rew_trial.concat([0,0,0]);	
+// 				if (i >= num_trials_per_condition * cue_n) { trial_order = trial_order.concat([1,2,6]);}
+// 				else {trial_order = trial_order.concat([5,3,6]); }
+// 				break;
+// 
+// 				case 4: //ser fn +
+// 				rew_trial = rew_trial.concat([1,0]);
+// 				if (i >= num_trials_per_condition * cue_n) {trial_order = trial_order.concat([2,6]);}	
+// 				else {trial_order = trial_order.concat([3,6]);}
+// 				break;
+// 				
+// 				case 5: //always rewarded
+// 				rew_trial = rew_trial.concat([1,0]); 
+// 				trial_order = trial_order.concat([4,6]);	
+// 				break;
+// 				}
+// 			}
 			for (var i = 0; i < cond.length; i++) {		
 
 				switch (cond[i]) {
 				case 1: //ser fp +
 				rew_trial = rew_trial.concat([0,1,0])
-				if (i >= num_trials_per_condition * cue_n){ trial_order = trial_order.concat([5,3,6]); }
-				else { trial_order = trial_order.concat([1,2,6]); }
-				break;
+				trial_order = trial_order.concat([0,1,10]);
+				break; 
 				
 				case 2: //ser fp -
 				rew_trial = rew_trial.concat([0,0])
-				if (i >= num_trials_per_condition * cue_n) {trial_order = trial_order.concat([3,6]);}
-				else {trial_order = trial_order.concat([2,6]);}	
+				trial_order = trial_order.concat([1,10]);	
 				break;
 
 				case 3:  //ser fn -
 				rew_trial = rew_trial.concat([0,0,0]);	
-				if (i >= num_trials_per_condition * cue_n) { trial_order = trial_order.concat([1,2,6]);}
-				else {trial_order = trial_order.concat([5,3,6]); }
+				trial_order = trial_order.concat([4,2,10]);
 				break;
 
 				case 4: //ser fn +
 				rew_trial = rew_trial.concat([1,0]);
-				if (i >= num_trials_per_condition * cue_n) {trial_order = trial_order.concat([2,6]);}	
-				else {trial_order = trial_order.concat([3,6]);}
+				trial_order = trial_order.concat([2,10]);
 				break;
 				
 				case 5: //always rewarded
 				rew_trial = rew_trial.concat([1,0]); 
-				trial_order = trial_order.concat([4,6]);	
+				trial_order = trial_order.concat([3,10]);	
+				break;
+				
+				case 6: //blocking AF+
+				rew_trial = rew_trial.concat([1,0]); 
+				trial_order = trial_order.concat([5,10]);
+				break;
+				
+				case 7: //blocking CG+
+				rew_trial = rew_trial.concat([1,0]); 
+				trial_order = trial_order.concat([6,10]);
+				break;
+				
+				case 8: //blocking HI-
+				rew_trial = rew_trial.concat([0,0]); 
+				trial_order = trial_order.concat([7,10]);
+				break;
+				
+				case 9: //blocking F+
+				rew_trial = rew_trial.concat([1,0]); 
+				trial_order = trial_order.concat([8,10]);
+				break;
+				
+				case 10: //blocking G+
+				rew_trial = rew_trial.concat([1,0]); 
+				trial_order = trial_order.concat([9,10]);
 				break;
 				}
 			}
 			
+			//set up left right counterbalance
+			var lr = [];
+			for(var i=0; i<=trial_order.length/2; i++){lr.push(0);}
+			for(var i=0; i<=trial_order.length/2; i++){lr.push(1);}
+			shuffle(lr)
+			
 			//determine which cue is which
-			var cue_cb = shuffle([1,2,3,4,5,6]);
+// 			var cue_cb = shuffle([1,2,3,4,5]);
+			var cue_cb = shuffle([1,2,3,4,5,6,7,8,9]);
 			$.cookie('cue_cb',cue_cb);
 			cue_img = [];
 			for (var i=0; i<cue_cb.length; i++) {
 				cue_img[i] = new Image();
 				cue_img[i].src = "/fd/pics/cue" + cue_cb[i] + ".jpg";
+				console.log(cue_img[i].src)
 			}
+			
+			//set DIV style images
+			$("#background").css('background','url("/fd/pics/door.jpg")');
+			$("#fix").css('background','url("/fd/pics/fix_def.jpg")');
+			$("#new_trial").css('background','url("/fd/pics/target_black.jpg")');
+			$("#target").css('background','url("/fd/pics/target_blue.jpg")');
+
 
 			//preload images
-			var cue_blk = new Image();
-			cue_blk.src = "/mw/pics/black.jpg";
- 			cue_img[cue_cb.length] = new Image();
-			cue_img[cue_cb.length].src = "/fd/pics/target_black.jpg";
+			var scramble = new Image();
+			scramble.src = "/fd/pics/scramble.jpg";
 
 			//listen for keypresses
 			window.addEventListener("keydown", response, false);
 			
 			//prepare the trial
 			$(document).ready(function() {
-                $("#cues").hide();
+                $("#cue_left").hide();
+                $("#cue_right").hide();
+                $("#background").hide();
                 $("#fix").hide();
                 $("#target").hide();
+                $("#new_trial").hide()
                 $("#outcome").html("<big>Get ready...</big>");
-				$("#outcome").center().show();
+// 				$("#outcome").center().show();
+				$("#outcome").show();
 
-                setTimeout(function() { $("#outcome").hide(); $("#fix").center().show();}, init_dur);
+
+//                 setTimeout(function() { $("#outcome").hide(); $("#fix").center().show();}, init_dur);
+                setTimeout(function() { $("#outcome").hide(); $("#fix").show();}, init_dur);
+
  				setTimeout(nextTrainingTrial, init_dur*2); //pause and start the experiment
 			});
 
@@ -143,16 +238,16 @@
 			}
 	
 
-            jQuery.fn.center = function () {
-                this.css("position","absolute");
-                this.css("top", Math.max(0, 
-                    (($(window).height() - this.outerHeight()) / 2) + 
-                    $(window).scrollTop()) + "px");
-                this.css("left", Math.max(0, 
-                    (($(window).width() - this.outerWidth()) / 2) + 
-                    $(window).scrollLeft()) + "px");
-                return this;
-            }
+//             jQuery.fn.center = function () {
+//                 this.css("position","absolute");
+//                 this.css("top", Math.max(0, 
+//                     (($(window).height() - this.outerHeight()) / 2) + 
+//                     $(window).scrollTop()) + "px");
+//                 this.css("left", Math.max(0, 
+//                     (($(window).width() - this.outerWidth()) / 2) + 
+//                     $(window).scrollLeft()) + "px");
+//                 return this;
+//             }
 
 			//Training over. Write out respondes to the text file
 			function done() {		
@@ -212,17 +307,101 @@
                 if (trial == trial_order.length) { 
                 	bank = bank.toFixed(2)
 					$("#outcome").html("<big>" + "Congratulations! You earned $" + bank + "</big>");
-					$("#cues").hide();
+					$("#cue_left").hide();
+					$("#cue_right").hide();
 					$("#fix").hide();
 					$("#target").hide();	
-					$("#outcome").center().show();
+					$("#new_trial").hide()
+// 					$("#outcome").center().show();
+					$("#outcome").show();
 			
                     setTimeout(done, out_dur);
                     return;
                 }
-				$("#cue").attr("src", cue_img[ trial_order[trial] ].src);
-                $("#cues").center().show();
-				$("#fix").hide();
+                
+                $("#fix").hide();
+                
+//                 if (trial_order[trial] == 6) {//iti image
+//                 	$("#background").hide();
+//                 	$("#new_trial").center().show();
+//                 }
+//                 else {
+// 					if (lr[trial] == 0){
+// 					$("#cue_l").attr("src", cue_img[ trial_order[trial] ].src);
+// 					$("#cue_r").attr("src", scramble.src);}
+// 					else {
+// 					$("#cue_l").attr("src", scramble.src);
+// 					$("#cue_r").attr("src", cue_img[ trial_order[trial] ].src);}
+// 				
+// 					$("#cue_left").show();
+// 					$("#cue_right").show();
+//   					$("#background").center().show();	
+// 				}
+				console.log(trial_order[trial])
+				if (trial_order[trial] == 10) {//iti image
+                	$("#background").hide();
+//                 	$("#new_trial").center().show();
+                	$("#new_trial").show();
+
+                }
+                else if (block_trial[trial] == 0){ //not a blocking trial
+					if (lr[trial] == 0){
+// 					$("#cue_l").attr("src", cue_img[ trial_order[trial] ].src);
+// 					$("#cue_r").attr("src", scramble.src);}
+					$("#cue_left").css('background','url(' + cue_img[ trial_order[trial] ].src +')');
+					$("#cue_right").css('background','url(' + scramble.src +')');}
+
+					else {
+// 					$("#cue_l").attr("src", scramble.src);
+// 					$("#cue_r").attr("src", cue_img[ trial_order[trial] ].src);}
+					$("#cue_right").css('background','url(' + cue_img[ trial_order[trial] ].src +')');
+					$("#cue_left").css('background','url(' + scramble.src +')');}
+
+				
+					$("#cue_left").show();
+					$("#cue_right").show();
+//   					$("#background").center().show();	
+  					$("#background").show();	
+
+				}
+				else if (block_trial[trial] == 1) { //blocking trial
+
+					if (trial_order[trial] == 5){ //ser fp+ negative blocking
+						var cue1 = cue_img[0].src
+						var cue2 = cue_img[5].src }
+					else if (trial_order[trial] == 6){ //ser fn- positive blocking
+						var cue1 = cue_img[4].src
+						var cue2 = cue_img[6].src }
+					else if (trial_order[trial] == 7){ //negative control
+						var cue1 = cue_img[7].src
+						var cue2 = cue_img[8].src}
+					else if (trial_order[trial] == 8) {//final probe
+						var cue1 = cue_img[5].src
+						var cue2 = scramble.src}
+					else if (trial_order[trial] == 9) {//final probe
+						var cue1 = cue_img[6].src
+						var cue2 = scramble.src}
+					
+					if (lr[trial] == 0){
+// 					$("#cue_l").attr("src", cue1);
+// 					$("#cue_r").attr("src", cue2);}
+					$("#cue_left").css('background','url(' + cue1 +')');
+					$("#cue_right").css('background','url(' + cue2 +')');}
+
+
+					else {
+// 					$("#cue_l").attr("src", cue2);
+// 					$("#cue_r").attr("src", cue1);}
+					$("#cue_right").css('background','url(' + cue1 +')');
+					$("#cue_left").css('background','url(' + cue2 +')');}
+					
+					$("#cue_left").show();
+					$("#cue_right").show();
+//   					$("#background").center().show();	
+	  				$("#background").show();	
+			
+				}
+				
 				
 				if (rew_trial[trial] == 1) { //rewarded trial
 				tStep = 0;
@@ -249,7 +428,9 @@
 				switch (tStep) {
 					case 1: // response
 					pre_resp = null
-					$("#target").center().show();
+// 					$("#target").center().show();
+					$("#target").show();
+
                     if (resp == -1) { //no response yet
                     	rt = new Date().getTime();
 						waitTO = setTimeout(nextTrainingStep, im_dur - latency); //1250 ms to respond				
@@ -266,28 +447,40 @@
 						out += "-1,-1,-1";
                 		if (trial != rew_trial.length-1) { out += ","; }
                 		val = '0' + "&#162"
+					
 					}
 					else {
 					val = (rew*100).toFixed(0) + "&#162"//display reward amount
 					}
 					$("#target").hide();
-               		$("#fix").center().show();
-					$("#cue").attr("src", cue_blk.src);
+//                		$("#fix").center().show();
+               		$("#fix").show();
+               		$("#cue_left").hide();
+               		$("#cue_right").hide();
+					$("#background").hide();
+					$("#new_trial").hide()
 					setTimeout(nextTrainingStep, feedback_iti)
 					break;
 					
 					case 3: //feedback
 					$("#outcome").html("<big>" + val + "</big>");
-					$("#cues").hide();
-					$("#fix").center().hide();
-					$("#outcome").center().show();		
+// 					$("#fix").center().hide();
+// 					$("#outcome").center().show();
+					$("#fix").hide();
+					$("#outcome").show();		
 					setTimeout(nextTrainingStep, feedback_dur)	
 					break;
 						
 					case 4: //iti
-					$("#outcome").center().hide();		
-               		$("#fix").center().show();
-					$("#cue").attr("src", cue_blk.src);
+					$("#outcome").hide();	
+					$("#new_trial").hide()
+					$("#cue_left").hide();
+               		$("#cue_right").hide();
+					$("#background").hide();
+					$("#target").hide();	
+//                		$("#fix").center().show();
+               		$("#fix").show();
+
 					if (trial == rew_trial.length-1 || trial_order[trial] == 5 || trial_order[trial + 1] == 5) {
 						setTimeout(nextTrainingTrial, iti_scramble_dur[trial]);  //fixation
 					}
@@ -302,37 +495,94 @@
 		</script>
 
 		<style>
-			body { font: 100% "Trebuchet MS", sans-serif, white; background: black; }
+			body {
+				font: 100% "Trebuchet MS", sans-serif, white; background: black;
+				margin: 0;
+				width: 100vw;
+				height: 100vh;
+			}
             big { font: 200% "Trebuchet MS", sans-serif; color: white; }
-            
+            #cue_right,#cue_left {
+				width: 80vw;
+				height: 100vh;
+				background-size: 34% auto !important;
+				background-repeat: no-repeat !important;
+				position: absolute;
+				top: 0;
+				left: 0;
+            }
+			#cue_right {
+				background-position: 94.7% center !important;
+			}
+			#cue_left {
+				background-position: 4.5% center !important;
+			}
+			#cue {
+			 height: 60%;
+			}
+			#background {
+				background-image: url("/fd/pics/door.jpg");
+				width: 80vw;
+				height: 100vh;
+				background-size: 100% auto !important;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+				//top: 50vh;
+				//margin-top: -40vh;
+				position: relative;
+			}			
 		</style>
 	</head>
 
 	<body>
 		<center>
-		<br><br>
-
-		<div id="cues">	
+		<div id="background">	
+			<div id="cue_left">	
+<!-- 
 				<div id="image">
-					<img style="height: 60%;" id="cue" src="/fd/pics/black.jpg">
+					<img id="cue_l" src="/fd/pics/scramble.jpg">
 				</div>
+ -->
+			</div>
+				
+			<div id="cue_right">	
+<!-- 
+				<div id="image">
+					<img id="cue_r" src="/fd/pics/scramble.jpg">
+				</div>
+ -->
+			</div>
+<!-- 
+			<div id="image">
+				<img id="cue" src="/fd/pics/door.jpg">
+			</div>
+ -->
 		</div>
 		
 		<div id="target">
+<!-- 
 				<div id="image">
 					<img style="height: 20%;" id="cue" src="/fd/pics/target_blue.jpg">
 				</div>
+ -->
 		</div>
 		
+		<div id="new_trial">
+<!-- 
+				<div id="image">
+					<img style="height: 50%;" id="cue" src="/fd/pics/target_black.jpg">
+				</div>
+ -->
+		</div>
 		
 		<div id="fix">
-			<img id="fixation" src="/mw/pics/fix_def.jpg">
+<!-- 
+			<img id="fixation" src="/fd/pics/fix_def.jpg">
+ -->
 		</div>
 		
 		<div id="outcome">
 		</div>
-		
-		<br><br>
 		</center>
 	</body>
 
