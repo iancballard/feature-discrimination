@@ -11,7 +11,7 @@
 			var waitTO = null;
 
             var left_right = []; //screen counterbalance
-            var rew_trial = [0 ,0]; //determines whether trial is rewarded
+            var rew_trial = [0,0]; //determines whether trial is rewarded
             var rts = [];
             var false_alarms = [];
             var ignore_press = 0
@@ -29,35 +29,44 @@
 
 			//set experimental timing
 			var im_dur = 2000; //image duration
-            var latency = 350; //latency to target
+            var latency = 500; //latency to target
             var fix_dur = 1000;
-            var out_dur = 1000; 
+            var out_dur = 0; 
             var iti_dur = 1000;
-            var outcome_dur =  500;
-            var init_dur = 500; 
-            
+            var outcome_dur = 0;
+            var init_dur = 0; 
+			
 			//preload images
-			var cue_blk = new Image();
-			cue_blk.src = "/mw/pics/black.jpg";
-			cue_img = [];
+			var cue_img = []
 			cue_img[0] = new Image();
 			cue_img[0].src = "/fd/pics/cue1.jpg";
 			cue_img[1] = new Image();
-			cue_img[1].src = "/fd/pics/cue6.jpg";
-				
+			cue_img[1].src = "/fd/pics/cue5.jpg";
+			var scramble = new Image();
+			scramble.src = "/fd/pics/scramble.jpg";
+			
+			//set up left right counterbalance
+			var lr = [];
+			for(var i=0; i<=num_trials/2; i++){lr.push(0);}
+			for(var i=0; i<=num_trials/2; i++){lr.push(1);}
+			shuffle(lr)
+			
+					
 			//prepare the trial
 			$(document).ready(function() {
-                $("#cues").center().hide();
-                $("#target_act").center().hide();
-                $("#target_wait").center().hide();
-                $("#fix").center().hide();
+                $("#cue_left").hide();
+                $("#cue_right").hide();
+                $("#background").hide();
+                $("#fix").hide();
+                $("#target").hide();
+                $("#new_trial").hide()
                 $("#outcome").html("");
-				$("#outcome").center().show();
+				$("#outcome").show();
 
                 // preload images
                 new Image().src = "/fd/pics/fix_def.jpg";
 
-                setTimeout(function() { $("#outcome").hide(); $("#fix").center().show();}, init_dur);
+                setTimeout(function() { $("#outcome").hide(); $("#fix").show();}, init_dur);
 				setTimeout(nextTrainingTrial, 2*init_dur); //pause f and start the experiment
 			});
 
@@ -76,18 +85,6 @@
 				return tot / cnt;
 			}
 			
-
-            jQuery.fn.center = function () {
-                this.css("position","absolute");
-                this.css("top", Math.max(0, 
-                    (($(window).height() - this.outerHeight()) / 2) + 
-                    $(window).scrollTop()) + "px");
-                this.css("left", Math.max(0, 
-                    (($(window).width() - this.outerWidth()) / 2) + 
-                    $(window).scrollLeft()) + "px");
-                return this;
-            }
-
 			//Training over. Write out respondes to the text file
 			function done() {					
 				$.post("/cgi-bin/fd_out.cgi?ignore="+out, function(){
@@ -105,8 +102,6 @@
 				else if (r.keyCode == "32") { //space bar
 				ignore_press = 1
 				clearTimeout(waitTO);
-				$("#target_act").center().hide();
-				$("#target_wait").center().show();
 
                 rt = new Date().getTime() - rt;
 				rts.push(rt)
@@ -137,16 +132,33 @@
 				//If experiment is over, show bank, pause 3 seconds and call done
                 if (trial == num_trials) { 
                 	
-             		$("#cues").hide();
+                	perc_corr = 100*bank/num_trials
+					$("#outcome").html("");
+					$("#cue_left").hide();
+					$("#cue_right").hide();
 					$("#fix").hide();
+					$("#target").hide();	
+					$("#new_trial").hide()
+					$("#outcome").show();
 					
+					rt_thresh = average(rts)			
                     setTimeout(done, outcome_dur);
                     return;
                 }
+                
+                $("#fix").hide();
 
-				$("#cue").attr("src", cue_img[ trial ].src);
-				$("#cues").center().show();
-				$("#fix").hide();
+				if (lr[trial] == 0){
+				$("#cue_left").css('background','url(' + cue_img[trial].src +')');
+				$("#cue_right").css('background','url(' + scramble.src +')');}
+
+				else {
+				$("#cue_right").css('background','url(' + cue_img[trial].src +')');
+				$("#cue_left").css('background','url(' + scramble.src +')');}
+
+				$("#cue_left").show();
+				$("#cue_right").show();
+				$("#background").show();	
 
 				if (rew_trial[trial] == 1) { //rewarded trial
 				tStep = 0;
@@ -168,7 +180,7 @@
 
 				switch (tStep) {
 					case 1: // response
-					$("#target_act").center().show();
+					$("#target").show();
 					resp = -1
                     rt = new Date().getTime();
 					waitTO = setTimeout(nextTrainingStep, im_dur - latency); //1250 ms to respond
@@ -176,10 +188,11 @@
 
 					case 2: // fixation
 					waitTO = null;
-					$("#target_wait").hide();
-					$("#target_act").hide();
-               		$("#fix").center().show();
-					$("#cue").attr("src", cue_blk.src);
+					$("#target").hide();
+					$("#cue_left").hide();
+               		$("#cue_right").hide();
+					$("#background").hide();
+               		$("#fix").show();
 					setTimeout(nextTrainingStep, fix_dur);  //fixation
 					break;
 					
@@ -200,19 +213,25 @@
 					nextTrainingStep();
 					}
 					else {
-					$("#outcome").html("<big>" + val + "</big>");
+					$("#outcome").html(val);
 					$("#cues").hide();
-					$("#fix").center().hide();
-					$("#outcome").center().show();
+					$("#fix").hide();
+					$("#cue_left").hide();
+               		$("#cue_right").hide();
+					$("#background").hide();
+					$("#outcome").show();
 					setTimeout(nextTrainingStep, out_dur); //Show outcome for 1 seconds
 					}
 					break;
 
 					case 4: // ITI (1 s)
-					$("#outcome").hide();
-					$("#fix").center().show();
- 					$("#cue").attr("src", cue_blk.src);
- 					$("#cues").center().show();
+					$("#outcome").hide();	
+					$("#new_trial").hide()
+					$("#cue_left").hide();
+               		$("#cue_right").hide();
+					$("#background").hide();
+					$("#target").hide();	
+               		$("#fix").show();
 					setTimeout(nextTrainingTrial, iti_dur);
                     trial++;
 				}
@@ -221,44 +240,95 @@
 		</script>
 
 		<style>
-			body { font: 100% "Trebuchet MS", sans-serif, white; background: black; }
-            big { font: 200% "Trebuchet MS", sans-serif; color: white; }
-            
+			body {
+				font: 100% "Trebuchet MS", sans-serif, white; background: black;
+				margin: 0;
+				width: 100vw;
+				height: 100vh;
+			}
+            #cue_right,#cue_left {
+				width: 80vw;
+				height: 100vh;
+				background-size: 34.5% auto !important;
+				background-repeat: no-repeat !important;
+				position: absolute;
+				top: 0;
+				left: 0;
             }
+			#cue_right {
+				background-position: 94.7% center !important;
+			}
+			#cue_left {
+				background-position: 4.6% center !important;
+			}
+			#fix {
+				background-image: url("/fd/pics/fix_def.jpg");
+				width: 100vw;
+				height: 100vh;
+				background-size: 3% auto !important;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+				position: relative;
+			}
+			#new_trial {
+				background-image: url("/fd/pics/target_black.jpg");
+				width: 100vw;
+				height: 100vh;
+				background-size: 20% auto !important;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+				position: relative;
+			}
+			#target {
+				background-image: url("/fd/pics/target_blue.jpg");
+				width: 80vw;
+				height: 100vh;
+				background-size: 15% auto !important;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+			}
+
+			#outcome {
+				font: 200% "Trebuchet MS", sans-serif; 
+				color: white;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+			#background {
+				background-image: url("/fd/pics/door.jpg");
+				width: 80vw;
+				height: 100vh;
+				background-size: 100% auto !important;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+				position: relative;
+			}	
 		</style>
 	</head>
 
 	<body>
 		<center>
-		<br><br>
-
-		<div id="cues">	
-				<div id="image">
-					<img style="height: 60%;" id="cue" src="/mw/pics/black.jpg">
-				</div>
+		<div id="background">	
+			<div id="cue_left">	
+			</div>
+				
+			<div id="cue_right">	
+			</div>
+			<div id="target">
+			</div>
 		</div>
 		
-		<div id="target_act">
-				<div id="image">
-					<img style="height: 20%;" id="cue" src="/fd/pics/target_blue.jpg">
-				</div>
+		<div id="new_trial">
 		</div>
-		
-		<div id="target_wait">
-				<div id="image">
-					<img style="height: 20%;" id="cue" src="/fd/pics/target_blue.jpg">
-				</div>
-		</div>
-		
 		
 		<div id="fix">
-			<img id="fixation" src="/mw/pics/fix_def.jpg">
 		</div>
 		
 		<div id="outcome">
 		</div>
-		
-		<br><br>
+		</center>
 		</center>
 	</body>
 

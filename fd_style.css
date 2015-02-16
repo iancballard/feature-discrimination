@@ -1,0 +1,65 @@
+body {
+	font: 100% "Trebuchet MS", sans-serif, white; background: black;
+	margin: 0;
+	width: 100vw;
+	height: 100vh;
+}
+#cue_right,#cue_left {
+	width: 80vw;
+	height: 100vh;
+	background-size: 34.5% auto !important;
+	background-repeat: no-repeat !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+#cue_right {
+	background-position: 94.7% center !important;
+}
+#cue_left {
+	background-position: 4.6% center !important;
+}
+#fix {
+	background-image: url("/fd/pics/fix_def.jpg");
+	width: 100vw;
+	height: 100vh;
+	background-size: 3% auto !important;
+	background-position: center center !important;
+	background-repeat: no-repeat !important;
+	position: relative;
+}
+#new_trial {
+	background-image: url("/fd/pics/target_black.jpg");
+	width: 100vw;
+	height: 100vh;
+	background-size: 20% auto !important;
+	background-position: center center !important;
+	background-repeat: no-repeat !important;
+	position: relative;
+}
+#target {
+	background-image: url("/fd/pics/target_blue.jpg");
+	width: 80vw;
+	height: 100vh;
+	background-size: 15% auto !important;
+	background-position: center center !important;
+	background-repeat: no-repeat !important;
+}
+
+#outcome {
+	font: 200% "Trebuchet MS", sans-serif; 
+	color: white;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#background {
+	background-image: url("/fd/pics/door.jpg");
+	width: 80vw;
+	height: 100vh;
+	background-size: 100% auto !important;
+	background-position: center center !important;
+	background-repeat: no-repeat !important;
+	position: relative;
+}

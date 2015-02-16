@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<title>SDNL</title>
-		<link type="text/css" href="/jquery/css/ui-lightness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
+		<link type="text/css" href="fd_style.css" rel="stylesheet" />
 		<script type="text/javascript" src="/jquery/js/jquery-1.5.1.min.js"></script>
 		<script type="text/javascript" src="/jquery/js/jquery-ui-1.8.13.custom.min.js"></script>
 		<script type="text/javascript" src="/jquery/js/jquery.numeric.js"></script>
@@ -34,7 +34,7 @@
             var out_dur = 1000; 
             var iti_dur = 1000;
             var outcome_dur = 4000;
-            var init_dur = 0//2500; 
+            var init_dur = 2500; 
             
 			//select 3/4 the trials to be rewarded 
 			for (var i = 0; i < 3*num_trials/4; i++) {rew_trial[i] = 1}
@@ -43,7 +43,7 @@
 			
 			//preload images
 			var cue_img = new Image();
-			cue_img.src = "/fd/pics/cue1.jpg";
+			cue_img.src = "/fd/pics/cue10.jpg";
 			var scramble = new Image();
 			scramble.src = "/fd/pics/scramble.jpg";
 			
