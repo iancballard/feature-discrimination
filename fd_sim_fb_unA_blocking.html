@@ -19,8 +19,8 @@
             var reward = .05;
             var trial_idx = 0; //keeps tracks of number of real trials, since nextTrainingTrial() treats ITI images as trials, and need special indexing that ignores these
             var out = ""; // this string will be saved on the server at the end of training
-            var num_trials_per_condition = 15
-            var num_blocked_trials = 5
+            var num_trials_per_condition = 7
+            var num_blocked_trials = 4
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
             var rt_step_up = 10 //adjust size for thresholding
             var rt_step_down = 20 //adjust size for thresholding
@@ -187,7 +187,7 @@
 				$.post("/cgi-bin/fd_out.cgi?rew="+rew_trial);			
 				$.post("/cgi-bin/fd_out.cgi?fa="+false_alarms);			
 				$.post("/cgi-bin/fd_out.cgi?ser="+out);
-				$.post("/cgi-bin/fd_out.cgi?lr="+out);
+				$.post("/cgi-bin/fd_out.cgi?lr="+lr);
                 $.post("/cgi-bin/fd_out.cgi?bonus="+bank, function(){
                      document.location="/cgi-bin/fd.cgi";});
 			}
