@@ -19,8 +19,8 @@
             var reward = .05;
             var trial_idx = 0; //keeps tracks of number of real trials, since nextTrainingTrial() treats ITI images as trials, and need special indexing that ignores these
             var out = ""; // this string will be saved on the server at the end of training
-            var num_trials_per_condition = 15
-            var num_blocked_trials = 5
+            var num_trials_per_condition = 1// 15
+            var num_blocked_trials = 1//5
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
             var rt_step_up = 10 //adjust size for thresholding
             var rt_step_down = 20 //adjust size for thresholding
@@ -43,7 +43,6 @@
             var feedback_dur = 2000; // feedback duration
             var feedback_iti = 1000; // feedback iti duration
 
-            
             //250 trials worth of itis generated from matlab. Poisson, mean 4s, min 2s, max 12s. 
             var iti_dur = [6,3,6,4,3,3,3,7,3,3,3,5,5,6,7,8,3,4,3,3,6,5,6,6,2,2,4,3,3,3,6,4,7,3,4,4,6,5,5,5,3,6,7,6,7,6,4,3,4,9,3,7,6,6,2,6,3,6,6,4,3,4,4,3,6,4,4,3,5,5,7,6,2,6,3,4,3,4,5,2,6,3,3,3,5,5,9,2,4,2,4,5,4,6,3,5,2,4,4,8,2,4,7,4,4,4,6,3,5,4,3,5,5,8,3,4,5,3,5,8,2,5,3,3,4,4,6,9,3,4,4,6,2,5,5,3,3,5,5,5,6,3,3,5,2,5,3,5,8,6,5,7,4,3,5,4,6,4,5,4,7,5,7,3,4,6,4,3,2,6,4,4,2,2,5,2,3,4,3,2,4,5,5,6,4,3,4,5,3,3,4,4,2,5,5,4,2,3,3,5,5,4,5,3,6,3,7,7,2,2,5,4,4,4,3,3,2,3,6,3,2,5,2,4,2,4,7,8,2,5,3,3,4,5,6,2,2,5,6,3,4,5,3,6,2,5,5,4,6,8,4,3,4,5,3,4,5,4,3,5,5,3,5,3,5,7,6,4,5,2,7,4,7,9,4,4,3,5,2,4,2,4,2,2,2,6,2,3,4,3,4,5,6,7,6,3,9,4,4,2,3,5,6,5,2,2,3,4,2,5,6,4,3,6,4,4,2,3,5,3,4,4,6,4,3,7,6,3,2,2,3,5,5,5,4,3,3,6,5,7,4,5,5,6,6,6,4,4,7,5,4,2,4,2,2,3,5,4,2,6,2,5,5,3,2,4,3,6,6,7,2,3,4,4,3,4,6,7,3,6,4,2,2,4,2,7,4,4,3,4,7,3,5,4,4,4,4,7,3,4,3,2,3,5,8,3,4,3,11,4,5,2,6,2,3,6,4,7,4,10,4,4,3,5,4,4,4,5,5,2,4,5,4,4,8,3,4,2,4,7,6,4,4,6,3,2,6,6,5,5,3,2,5,9,6,3,6,4,5,4,6,4,5,6,6,4,9,2,2,7,4,2,7,5,4,4,4,5,5,5,3,4,9,10,4,3,8,6,5,4,4,2,4,6,6,5,7,4,6,5,3,8,5,6,3,2,8,3,5,4,4,6,8,2,3,2,5,3,8,9,2,3,7,4,4,2,3,4,4,3,5,4,4,4,5,3,2,6,6,3,5,10,4,6,6,3,3,6,6,5,7,2,3,5,6,3,4,9,8,3,4,4,4,5,6,4,2,6,7,5,4,8,4,5,7,4,2,6,7,2,7,3,3,5,6,5,4,7,2,5,4,5,4,5,5,4,2,3,6,3,5,2,7,3,4,3,2,5,3,4,3,5,2,4,4,6,5,7,3,9,4,5,3,5,9,4,5,5,3,5,4,5,5,4,4,3,5,2,7,4,3,2,5,4,2,2,4,8,2,3,7,4,3,7,5,4,5,4,4,4,6,4,6,3,5,3,2,2,5,4,3,3,3,2,5,7,4,4,3,3,6,4,2,6,2,3,3,6,3,4,4,3,2,9,4,6,6,3,3,7,5,6,5,3,3,5,6,5,3,6,4,3,3,3,6,2,2,6,5,3,4,5,3,4,4,5,5,8,3,5,3,3,5,3,3,2,3,4,4,4,5,7,3,4,8,4,4,4,7,2,2,9,4,4,4,4,3,4,3,2,4,8,5,12,4,2,10,4,5,2,6,2,4,3,7,7,2,2,5,5,7,4,8,4,4,2,4,3,6,5,3,5,4,5,3,3,5,5,2,7,5,3,4,4,5,2,4,8,6,3,9,3,2,4,3,6,4,2,4,4,7,5,3,4,3,4,3,5,4,2,7,2,4,6,4,5,5,2,3,7,7,4,3,2,6,2,7,4,5,4,3,7,4,7,7,6,6,6,2,3,2,5,4,4,2,2,2,2,9,3,2,5,2,3,2,6,6,3,5,4,2,7,6,3,5,3,2,6,3,7,3,7,4,5,7,7,6,3,2,2,3,6,8,2,5,3,3,2,4,2,5,3,3,2,3,3,9,4,5,2,5,2,3,3,5,5,2,4,2,8,6,6,4,4,3,3,5,7,4,4,6,4,3,4,5,3,4,5,4,6,2,2,4,4,6,5,4,3,4,3,7,4,5,7,4,2,3,8,3,4,2,2,4,3,6,10,2,6,2,5,3,3,5,5,3,5,6,5,5,4,8,2,2,2,2,6,7,3,5,2];
             var iti_scramble_dur = [2,3,3,2,5,4,4,3,3,2,3,2,3,3,5,2,4,3,3,2,3,4,3,2,2,2,2,3,4,3,3,5,2,6,2,3,2,2,4,2,3,2,2,2,2,2,2,2,3,3,2,2,2,3,4,2,5,3,2,2,3,4,2,3,2,3,2,3,3,5,2,5,2,6,2,3,4,2,3,2,3,2,5,4,3,4,4,2,2,2,2,3,4,3,4,2,2,2,2,4,2,3,4,3,3,5,2,2,2,3,4,5,4,3,3,4,3,2,4,2,4,2,2,2,5,3,2,6,3,4,5,3,2,2,3,2,4,2,2,4,2,3,3,2,2,5,4,2,2,4,4,2,2,2,2,3,4,3,4,4,3,2,2,5,2,2,3,3,3,2,3,4,3,3,2,5,2,4,2,2,5,3,4,4,3,3,2,2,3,3,3,3,2,2,2,2,2,2,2,2,3,5,3,4,3,2,3,4,3,3,2,2,6,2,3,4,2,5,3,3,3,2,3,2,2,2,4,2,4,4,2,3,3,2,2,4,2,4,2,2,4,3,3,2,2,2,4,3,4,3,3,2,2,2,2,3,4,2,3,5,3,3,2,2,5,2,4,3,3,3,3,3,4,2,4,2,2,3,4,2,2,2,3,2,4,3,2,3,3,2,2,3,4,4,2,2,2,2,6,4,3,4,2,3,2,2,2,2,2,2,4,4,3,2,3,5,3,2,2,3,6,2,2,3,2,3,2,3,2,2,3,3,3,2,4,3,2,3,3,2,3,4,2,5,2,4,3,4,4,4,2,3,2,2,3,3,2,4,3,3,2,2,4,3,3,6,3,5,3,2,3,4,3,2,4,5,2,4,2,2,2,3,6,3,4,3,3,5,2,2,2,4,2,2,2,5,2,3,2,5,3,3,2,3,4,2,3,4,6,2,4,2,3,2,3,4,2,2,2,3,3,2,3,3,4,2,2,4,2,2,3,2,3,2,5,2,2,2,3,3,2,3,4,2,2,3,2,5,3,3,2,2,4,3,3,4,5,3,3,4,5,2,2,3,5,2,2,4,3,2,6,2,2,2,5,3,3,2,2,2,4,2,4,2,2,2,3,3,4,3,5,4,3,3,2,2,4,2,4,3,4,2,2,6,5,2,3,4,3,4,4,2,4,4,2,3,4,3,2,3,2,4,2,4,2,2,3,2,3,4,4,3,3,2,5,3,2,4,3,3,3,3,2,2,5,3,3,4,3,2,5,2,2,4,5,3,2,4,5,3,3,4,3,3,2,5,2,6,3,2,2,2,2,5,5,3,2,2,4,3,2,3,2,2,2,2,4,3,2,5,2,4,3,6,2,5,2,2,4,3,6,3,2,3,4,2,2,3,3,4,2,4,3,2,5,2,3,5,3,3,2,2,2,3,2,2,2,5,4,4,2,2,3,3,2,2,4,2,3,3,3,4,2,2,2,4,6,3,2,2,4,3,5,2,6,2,2,3,2,2,2,2,3,4,2,4,4,2,2,2,3,2,3,2,2,3,2,4,5,5,2,2,2,2,2,4,2,3,2,2,3,2,3,4,4,2,2,2,4,4,3,2,2,2,3,4,2,3,2,2,2,2,2,5,3,2,4,6,2,3,3,3,2,5,2,2,3,3,5,2,2,4,4,4,3,3,2,4,3,3,3,5,4,3,2,3,2,3,3,4,4,4,3,2,3,4,2,5,2,4,2,3,3,3,6,3,2,2,3,2,4,3,3,4,2,4,2,3,4,3,3,2,2,4,4,3,5,2,2,3,2,2,4,3,2,3,2,2,2,4,3,3,2,2,4,2,2,2,3,2,3,4,3,3,4,4,2,3,2,3,2,3,3,2,2,2,2,4,3,4,4,3,2,3,2,2,3,2,4,3,3,2,3,2,3,3,2,4,2,2,2,2,2,5,2,2,3,2,2,2,3,5,2,2,3,2,2,2,3,3,3,4,4,2,3,3,2,4,3,2,2,2,3,2,5,2,4,2,2,2,3,5,4,3,2,2,2,2,2,2,3,2,5,4,4,4,2,3,3,5,4,2,3,2,2,3,4,2,3,3,3,2,2,2,5,2,4,2,3,5,4,5,2,3,3,2,2,3,4,2,4,2,2,3,2,2,3,3,2,4,2,3,2,4,3,2,2,3,2,2,3,3,4,4,3,3,3,3,2,3,2,4,2,2,4,2,2,4,2,3,4,5,2,2,2,3,5,3,2,2,3,2,2,3,3,2,2,2,2,3];
@@ -64,50 +63,78 @@
 			for (var i = 0; i < num_trials_per_condition; i++) {cond = cond.concat(cond_arr)}
 			shuffle(cond);
 			
-			//add 5 shuffled trials of each condition. Needs to be separate to ensure all 20 iterations have happened
-			cond2 = []
-			for (var i = 0; i < num_switched_trials; i++) {cond2 = cond2.concat(cond_arr)}
+			//add blocking trials at the end
+			var cond2 = []
+			var cond3 = [9, 10]
+			var block_arr = [6, 7, 8, 8] //Twice as many negative trials to equate experience
+			for (var i = 0; i < num_blocked_trials; i++) {cond2 = cond2.concat(block_arr)}
 			shuffle(cond2);
-			cond = cond.concat(cond2); //add switched trials at the end
-
+			shuffle(cond3);
+			cond = cond.concat(cond2);
+			cond = cond.concat(cond3);
 			
-			//set up trial order
+			//set up trial order. This is a lot of code basically just to set up the reward vector
+			//and also insert iti image between each trial. Will clean up one day
 			for (var i = 0; i < cond.length; i++) {		
-
 				switch (cond[i]) {
-				case 1: //ser fp +
-				rew_trial = rew_trial.concat([0,1,0])
-				if (i >= num_trials_per_condition * cue_n){ trial_order = trial_order.concat([5,3,6]); }
-				else { trial_order = trial_order.concat([1,2,6]); }
-				break;
+				case 1: //sim fp +
+				rew_trial = rew_trial.concat([1,0])
+				trial_order = trial_order.concat([0,10]);
+				break; 
 				
-				case 2: //ser fp -
+				case 2: //sim fp -
 				rew_trial = rew_trial.concat([0,0])
-				if (i >= num_trials_per_condition * cue_n) {trial_order = trial_order.concat([3,6]);}
-				else {trial_order = trial_order.concat([2,6]);}	
+				trial_order = trial_order.concat([1,10]);
 				break;
 
-				case 3:  //ser fn -
-				rew_trial = rew_trial.concat([0,0,0]);	
-				if (i >= num_trials_per_condition * cue_n) { trial_order = trial_order.concat([1,2,6]);}
-				else {trial_order = trial_order.concat([5,3,6]); }
+				case 3:  //sim fn -
+				rew_trial = rew_trial.concat([0,0]);	
+				trial_order = trial_order.concat([2,10]);
 				break;
 
-				case 4: //ser fn +
+				case 4: //sim fn +
 				rew_trial = rew_trial.concat([1,0]);
-				if (i >= num_trials_per_condition * cue_n) {trial_order = trial_order.concat([2,6]);}	
-				else {trial_order = trial_order.concat([3,6]);}
+				trial_order = trial_order.concat([3,10]);
 				break;
 				
 				case 5: //always rewarded
 				rew_trial = rew_trial.concat([1,0]); 
-				trial_order = trial_order.concat([4,6]);	
+				trial_order = trial_order.concat([4,10]);	
+				break;
+				
+				case 6: //blocking AF+
+				rew_trial = rew_trial.concat([1,0]); 
+				trial_order = trial_order.concat([5,10]);
+				break;
+				
+				case 7: //blocking CG+
+				rew_trial = rew_trial.concat([1,0]); 
+				trial_order = trial_order.concat([6,10]);
+				break;
+				
+				case 8: //blocking HI-
+				rew_trial = rew_trial.concat([0,0]); 
+				trial_order = trial_order.concat([7,10]);
+				break;
+				
+				case 9: //blocking F+
+				rew_trial = rew_trial.concat([1,0]); 
+				trial_order = trial_order.concat([8,10]);
+				break;
+				
+				case 10: //blocking G+
+				rew_trial = rew_trial.concat([1,0]); 
+				trial_order = trial_order.concat([9,10]);
 				break;
 				}
 			}
 			
+			//preload images
+			var scramble = new Image();
+			scramble.src = "/fd/pics/scramble.jpg";
+
 			//determine which cue is which
-			var cue_cb = shuffle([1,2,3,4,5]);
+			var cue_cb = shuffle([1,2,3,4,5,6,7,8,9]);
 			$.cookie('cue_cb',cue_cb);
 			cue_img = [];
 			for (var i=0; i<cue_cb.length; i++) {
@@ -116,14 +143,9 @@
 			}
 			
 			//set up left right counterbalance
-			for(var i=0; i<=block_trial.length/2; i++){lr.push(0);}
-			for(var i=0; i<=(block_trial.length +1)/2; i++){lr.push(1);}
+			for(var i=0; i<=cond.length/2; i++){lr.push(0);}
+			for(var i=0; i<=(cond.length+1)/2; i++){lr.push(1);}
 			shuffle(lr)
-			
-
-			//preload images
-			var scramble = new Image();
-			scramble.src = "/fd/pics/scramble.jpg";
 
 			//listen for keypresses
 			window.addEventListener("keydown", response, false);
@@ -229,21 +251,56 @@
                 
                 $("#fix").hide();
 
-                if (trial_order[trial] == 6) {//iti image
+				if (trial_order[trial] == 10) {//iti image
                 	$("#background").hide();
-                	$("#new_trial").center().show();
+                	$("#new_trial").show();
                 }
-                else {
-					if (lr[trial] == 0){
-					$("#cue_l").attr("src", cue_img[ trial_order[trial] ].src);
-					$("#cue_r").attr("src", scramble.src);}
+				else { //blocking trial
+					if (trial_order[trial] == 0){ //sim fp+ AB+
+						var cue1 = cue_img[0].src
+						var cue2 = cue_img[1].src }
+					if (trial_order[trial] == 1){ //sim fp - B-
+						var cue1 = cue_img[1].src
+						var cue2 = scramble.src }
+					if (trial_order[trial] == 2){ //ser fp+ CD-
+						var cue1 = cue_img[2].src
+						var cue2 = cue_img[3].src }
+					if (trial_order[trial] == 3){ //ser fp+ D+
+						var cue1 = cue_img[3].src
+						var cue2 = scramble.src }
+					if (trial_order[trial] == 4){ //ser E+
+						var cue1 = cue_img[5].src
+						var cue2 = scramble.src}
+					if (trial_order[trial] == 5){ //ser fp+ AF+
+						var cue1 = cue_img[0].src
+						var cue2 = cue_img[5].src }
+					else if (trial_order[trial] == 6){ //ser CG-
+						var cue1 = cue_img[2].src
+						var cue2 = cue_img[6].src }
+					else if (trial_order[trial] == 7){ //HI-
+						var cue1 = cue_img[7].src
+						var cue2 = cue_img[8].src}
+					else if (trial_order[trial] == 8) {//F final probe
+						var cue1 = cue_img[5].src
+						var cue2 = scramble.src}
+					else if (trial_order[trial] == 9) {//G final probe
+						var cue1 = cue_img[6].src
+						var cue2 = scramble.src}
+					
+					//lr counterbalance
+					if (lr[trial_idx] == 0){
+					$("#cue_left").css('background','url(' + cue1 +')');
+					$("#cue_right").css('background','url(' + cue2 +')');}
+
 					else {
-					$("#cue_l").attr("src", scramble.src);
-					$("#cue_r").attr("src", cue_img[ trial_order[trial] ].src);}
-				
+					$("#cue_right").css('background','url(' + cue1 +')');
+					$("#cue_left").css('background','url(' + cue2 +')');}
+					
 					$("#cue_left").show();
 					$("#cue_right").show();
-  					$("#background").center().show();	
+	  				$("#background").show();	
+	  				
+	  				trial_idx += 1;
 				}
 				
 				

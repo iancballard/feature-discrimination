@@ -20,7 +20,6 @@
             var trial_idx = 0; //keeps tracks of number of real trials, since nextTrainingTrial() treats ITI images as trials, and need special indexing that ignores these
             var out = ""; // this string will be saved on the server at the end of training
             var num_trials_per_condition = 15
-            var num_switched_trials = 5
             var num_blocked_trials = 5
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
             var rt_step_up = 10 //adjust size for thresholding
@@ -152,9 +151,8 @@
 			
 			//set up left right counterbalance
 			for(var i=0; i<=block_trial.length/2; i++){lr.push(0);}
-			for(var i=0; i<=block_trial.length/2; i++){lr.push(1);}
+			for(var i=0; i<=(block_trial.length +1)/2; i++){lr.push(1);}
 			shuffle(lr)
-			
 
 			//preload images
 			var scramble = new Image();
@@ -262,6 +260,8 @@
                     return;
                 }
                 
+                $("#fix").hide();
+
 				if (trial_order[trial] == 10) {//iti image
                 	$("#background").hide();
                 	$("#new_trial").show();
@@ -301,7 +301,7 @@
 						var cue1 = cue_img[6].src
 						var cue2 = scramble.src}
 					
-					if (lr[trial] == 0){
+					if (lr[trial_idx] == 0){
 					$("#cue_left").css('background','url(' + cue1 +')');
 					$("#cue_right").css('background','url(' + cue2 +')');}
 
