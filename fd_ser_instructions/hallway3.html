@@ -1,0 +1,333 @@
+<html>
+	<head>
+		<title>SDNL</title>
+		<link type="text/css" href="/jquery/css/ui-lightness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
+		<script type="text/javascript" src="/jquery/js/jquery-1.5.1.min.js"></script>
+		<script type="text/javascript" src="/jquery/js/jquery-ui-1.8.13.custom.min.js"></script>
+		<script type="text/javascript" src="/jquery/js/jquery.numeric.js"></script>
+		<script type="text/javascript" src="/fd/jquery.cookie.js"></script>
+     	<script type="text/javascript">
+			var tStep = 0;
+			var waitTO = null;
+
+            var left_right = []; //screen counterbalance
+            var rew_trial = [0]; //determines whether trial is rewarded
+            var rts = [];
+            var false_alarms = [];
+            var ignore_press = 0
+            var trial = 0;
+            var resp = -1;
+            var rew = -1;
+            var rt = -1;
+            var bank = 0;
+            var reward = 1;
+            var out = ""; // this string will be saved on the server at the end of training
+            var num_trials = 1
+            var rt_thresh = 450 //start value for rt threshold
+            var rt_step_up = 50 //adjust size for thresholding
+            var rt_step_down = 50 //adjust size for thresholding
+
+			//set experimental timing
+			var im_dur = 2000; //image duration
+            var latency = 500; //latency to target
+            var fix_dur = 1000;
+            var out_dur = 0; 
+            var iti_dur = 1000;
+            var outcome_dur = 0;
+            var init_dur = 0; 
+			
+			//preload images
+			var cue_img = []
+			cue_img[0] = new Image();
+			cue_img[0].src = "/fd/pics/guitar.jpg";
+			var scramble = new Image();
+			scramble.src = "/fd/pics/scramble.jpg";
+			
+			//set up left right counterbalance
+			var lr = [];
+			for(var i=0; i<=num_trials/2; i++){lr.push(0);}
+			for(var i=0; i<=num_trials/2; i++){lr.push(1);}
+			shuffle(lr)
+			
+					
+			//prepare the trial
+			$(document).ready(function() {
+                $("#cue_left").hide();
+                $("#cue_right").hide();
+                $("#background").hide();
+                $("#fix").hide();
+                $("#target").hide();
+                $("#new_trial").hide()
+                $("#outcome").html("");
+				$("#outcome").show();
+
+                // preload images
+                new Image().src = "/fd/pics/fix_def.jpg";
+
+                setTimeout(function() { $("#outcome").hide(); $("#fix").show();}, init_dur);
+				setTimeout(nextTrainingTrial, 2*init_dur); //pause f and start the experiment
+			});
+
+			//listen for keypresses
+			window.addEventListener("keydown", response, false);
+
+            function shuffle(arr) { // stolen from somewhere that I can't remember...
+                for (var j,x,i=arr.length; i; j=parseInt(Math.random()*i), x=arr[--i], arr[i]=arr[j], arr[j]=x);
+                return arr;
+            }
+			
+			function average(arr) { //stolen from the internet
+				var tot = 0
+				var cnt = arr.length;
+				for (var i = 0; i < cnt; i++) {tot = tot + arr[i]}
+				return tot / cnt;
+			}
+			
+			//Training over. Write out respondes to the text file
+			function done() {					
+				$.post("/cgi-bin/fd_out.cgi?ignore="+out, function(){
+                                	document.location="/cgi-bin/fd.cgi";
+                                });
+			}
+
+			//Record responses
+			function response(r) {
+				if (ignore_press == 1) {return;} //ignore if already pressed
+				if (waitTO == null && r.keyCode == "32")  //false alarm
+				{ 
+				false_alarms += String(rew_trial[trial])
+				}
+				else if (r.keyCode == "32") { //space bar
+				ignore_press = 1
+				clearTimeout(waitTO);
+
+                rt = new Date().getTime() - rt;
+				rts.push(rt)
+
+				var rt_thresh_old = rt_thresh
+				if (rt < rt_thresh) { 
+                rew = reward * 5;
+                resp = r; 
+            	bank = bank + reward;
+            	rt_thresh = rt_thresh - rt_step_down;
+				}
+				else if (rt > rt_thresh) {
+				rew = 0;
+				resp = r;
+				rt_thresh = rt_thresh + rt_step_up;
+				}
+				
+				
+                out += rew.toFixed(2) + "," + rt + "," + rt_thresh_old;
+                if (trial != num_trials-1) { out += ","; } //append comma if not the last trial
+
+				setTimeout(nextTrainingStep, im_dur - rt);  //wait for rest of imdur before moving on to fixation
+				}
+			}
+			
+			//Set up a trial with the correct cues in the correct location 
+			function nextTrainingTrial() {
+				//If experiment is over, show bank, pause 3 seconds and call done
+                if (trial == num_trials) { 
+                	
+                	perc_corr = 100*bank/num_trials
+					$("#outcome").html("");
+					$("#cue_left").hide();
+					$("#cue_right").hide();
+					$("#fix").hide();
+					$("#target").hide();	
+					$("#new_trial").hide()
+					$("#outcome").show();
+					
+					rt_thresh = average(rts)			
+                    setTimeout(done, outcome_dur);
+                    return;
+                }
+                
+                $("#fix").hide();
+
+				if (lr[trial] == 0){
+				$("#cue_left").css('background','url(' + cue_img[trial].src +')');
+				$("#cue_right").css('background','url(' + scramble.src +')');}
+
+				else {
+				$("#cue_right").css('background','url(' + cue_img[trial].src +')');
+				$("#cue_left").css('background','url(' + scramble.src +')');}
+
+				$("#cue_left").show();
+				$("#cue_right").show();
+				$("#background").show();	
+
+				if (rew_trial[trial] == 1) { //rewarded trial
+				tStep = 0;
+				resp = -1;
+				setTimeout(nextTrainingStep, latency); //Pause 750ms and then start the rest of the trial
+				}
+				else { //non rewarded trial
+				tStep = 1;
+				resp = -2
+				setTimeout(nextTrainingStep, im_dur); //Pause 750ms and then start the rest of the trial
+				}
+			}
+
+			//Loop through sections of a trial (response, fixation, outcome, ITI), then go to next training trial
+			function nextTrainingStep() {
+				ignore_press = 0
+				tStep++;
+				document.getSelection().removeAllRanges(); //clear selection in case user selected a cue
+
+				switch (tStep) {
+					case 1: // response
+					$("#target").show();
+					resp = -1
+                    rt = new Date().getTime();
+					waitTO = setTimeout(nextTrainingStep, im_dur - latency); //1250 ms to respond
+					break;
+
+					case 2: // fixation
+					waitTO = null;
+					$("#target").hide();
+					$("#cue_left").hide();
+               		$("#cue_right").hide();
+					$("#background").hide();
+               		$("#fix").show();
+					setTimeout(nextTrainingStep, fix_dur);  //fixation
+					break;
+					
+					case 3: // outcome
+                    if (resp == -1) { //no reward (too slow)
+                        rew = -1; 
+                        out += "-1,-1,-1";
+                        val = "0&#162" //display reward amount
+                        if (trial != num_trials-1) { out += ","; }
+                    }
+                    else {
+					val = rew.toFixed(0) + "&#162"//display reward amount
+					}
+					
+					if (resp == -2) { //non rewarded trial
+					out += "-2,-2,-2";
+                    if (trial != rew_trial.length-1) { out += ","; }
+					nextTrainingStep();
+					}
+					else {
+					$("#outcome").html(val);
+					$("#cues").hide();
+					$("#fix").hide();
+					$("#cue_left").hide();
+               		$("#cue_right").hide();
+					$("#background").hide();
+					$("#outcome").show();
+					setTimeout(nextTrainingStep, out_dur); //Show outcome for 1 seconds
+					}
+					break;
+
+					case 4: // ITI (1 s)
+					$("#outcome").hide();	
+					$("#new_trial").hide()
+					$("#cue_left").hide();
+               		$("#cue_right").hide();
+					$("#background").hide();
+					$("#target").hide();	
+               		$("#fix").show();
+					setTimeout(nextTrainingTrial, iti_dur);
+                    trial++;
+				}
+					
+			}
+		</script>
+
+		<style>
+			body {
+				font: 100% "Trebuchet MS", sans-serif, white; background: black;
+				margin: 0;
+				width: 100vw;
+				height: 100vh;
+			}
+            #cue_right,#cue_left {
+				width: 80vw;
+				height: 100vh;
+				background-size: 34.5% auto !important;
+				background-repeat: no-repeat !important;
+				position: absolute;
+				top: 0;
+				left: 0;
+            }
+			#cue_right {
+				background-position: 94.7% center !important;
+			}
+			#cue_left {
+				background-position: 4.6% center !important;
+			}
+			#fix {
+				background-image: url("/fd/pics/fix_def.jpg");
+				width: 100vw;
+				height: 100vh;
+				background-size: 3% auto !important;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+				position: relative;
+			}
+			#new_trial {
+				background-image: url("/fd/pics/target_black.jpg");
+				width: 100vw;
+				height: 100vh;
+				background-size: 20% auto !important;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+				position: relative;
+			}
+			#target {
+				background-image: url("/fd/pics/target_blue.jpg");
+				width: 80vw;
+				height: 100vh;
+				background-size: 15% auto !important;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+			}
+
+			#outcome {
+				font: 200% "Trebuchet MS", sans-serif; 
+				color: white;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+			#background {
+				background-image: url("/fd/pics/door.jpg");
+				width: 80vw;
+				height: 100vh;
+				background-size: 100% auto !important;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+				position: relative;
+			}	
+		</style>
+	</head>
+
+	<body>
+		<center>
+		<div id="background">	
+			<div id="cue_left">	
+			</div>
+				
+			<div id="cue_right">	
+			</div>
+			<div id="target">
+			</div>
+		</div>
+		
+		<div id="new_trial">
+		</div>
+		
+		<div id="fix">
+		</div>
+		
+		<div id="outcome">
+		</div>
+		</center>
+		</center>
+	</body>
+
+</html>
