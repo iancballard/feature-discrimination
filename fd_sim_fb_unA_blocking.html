@@ -25,7 +25,7 @@
             var rt_step_up = 10 //adjust size for thresholding
             var rt_step_down = 20 //adjust size for thresholding
 			$.cookie('earnings',0); //Set cookie
-
+			
 			//arrays to be populated
 			var rts = [];
             var false_alarms = [];			
@@ -198,8 +198,11 @@
 				if (waitTO == null && r.keyCode == "32")  //false alarm
 				{ 
 				false_alarms += String(trial_order[trial]) + ',' + String(tStep) + ','
-				bank = bank - 2*rew
+				bank = bank - 2*reward
 				ignore_press = 1
+				
+				console.log(rew.toFixed(2) + "," + rt + "," + rt_thresh.toFixed(2));
+				console.log("bank is " + bank)
 				}
 				else if (r.keyCode == "32") { //space bar
 				ignore_press = 1
@@ -224,6 +227,9 @@
 				resp = r;
 				rt_thresh = rt_thresh + rt_step_up;
 				}
+				
+				console.log(rew.toFixed(2) + "," + rt + "," + rt_thresh_old.toFixed(2));
+				console.log("bank is " + bank)
 				
                 out += rew.toFixed(2) + "," + rt + "," + rt_thresh_old.toFixed(2);
                 if (trial != rew_trial.length-1) { out += ","; } //append comma if not the last trial
