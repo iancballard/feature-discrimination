@@ -19,8 +19,8 @@
             var reward = .05;
             var trial_idx = 0; //keeps tracks of number of real trials, since nextTrainingTrial() treats ITI images as trials, and need special indexing that ignores these
             var out = ""; // this string will be saved on the server at the end of training
-            var num_trials_per_condition = 10
-            var num_blocked_trials = 10
+            var num_trials_per_condition = 8
+            var num_blocked_trials = 8
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
             var rt_step_up = 10 //adjust size for thresholding
             var rt_step_down = 20 //adjust size for thresholding
@@ -98,8 +98,8 @@
 				break;
 				
 				case 5: //always rewarded
-				rew_trial = rew_trial.concat([1,0]); 
-				trial_order = trial_order.concat([4,10]);	
+// 				rew_trial = rew_trial.concat([1,0]); 
+// 				trial_order = trial_order.concat([4,10]);	
 				break;
 				
 				case 6: //blocking AF+
