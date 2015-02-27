@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<title>SDNL</title>
-		<link type="text/css" href="fd_style.css" rel="stylesheet" />
+		<link type="text/css" href="/jquery/css/ui-lightness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
 		<script type="text/javascript" src="/jquery/js/jquery-1.5.1.min.js"></script>
 		<script type="text/javascript" src="/jquery/js/jquery-ui-1.8.13.custom.min.js"></script>
 		<script type="text/javascript" src="/jquery/js/jquery.numeric.js"></script>
@@ -11,7 +11,7 @@
 			var waitTO = null;
 
             var left_right = []; //screen counterbalance
-            var rew_trial = []; //determines whether trial is rewarded
+            var rew_trial = [0]; //determines whether trial is rewarded
             var rts = [];
             var false_alarms = [];
             var ignore_press = 0
@@ -22,31 +22,26 @@
             var bank = 0;
             var reward = 1;
             var out = ""; // this string will be saved on the server at the end of training
-            var num_trials = 20
+            var num_trials = 1
             var rt_thresh = 450 //start value for rt threshold
             var rt_step_up = 50 //adjust size for thresholding
             var rt_step_down = 50 //adjust size for thresholding
-			var sub_id = $.cookie('sub_id')
 
 			//set experimental timing
 			var im_dur = 2000; //image duration
             var latency = 500; //latency to target
             var fix_dur = 1000;
-            var out_dur = 1000; 
+            var out_dur = 0; 
             var iti_dur = 1000;
-            var outcome_dur = 4000;
-            var init_dur = 2500; 
-            
-			//select 3/4 the trials to be rewarded 
-			for (var i = 0; i < 3*num_trials/4; i++) {rew_trial[i] = 1}
-			for (var i = 3*num_trials/4; i < num_trials; i++) {rew_trial[i] = 0}
-			shuffle(rew_trial);
+            var outcome_dur = 0;
+            var init_dur = 0; 
 			
 			//preload images
-			var cue_img = new Image();
-			cue_img.src = "/fd/pics/cue10.jpg";
-			var scramble = new Image();
-			scramble.src = "/fd/pics/scramble.jpg";
+			var cue_img = []
+			cue_img[0] = new Image();
+			cue_img[0].src = "/fd/pics/cue1.jpg";
+			cue_img[1] = new Image();
+			cue_img[1].src = "/fd/pics/cue5.jpg";
 			
 			//set up left right counterbalance
 			var lr = [];
@@ -63,7 +58,7 @@
                 $("#fix").hide();
                 $("#target").hide();
                 $("#new_trial").hide()
-                $("#outcome").html("Get ready...");
+                $("#outcome").html("");
 				$("#outcome").show();
 
                 // preload images
@@ -90,7 +85,7 @@
 			
 			//Training over. Write out respondes to the text file
 			function done() {					
-				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " rt="+out, function(){
+				$.post("/cgi-bin/fd_out.cgi?ignore="+out, function(){
                                 	document.location="/cgi-bin/fd.cgi";
                                 });
 			}
@@ -98,14 +93,11 @@
 			//Record responses
 			function response(r) {
 				if (ignore_press == 1) {return;} //ignore if already pressed
-// 				if (waitTO == null && (r.keyCode == "32" || r.keyCode == "49" || r.keyCode == "50"  || r.keyCode == "51" || r.keyCode == "52" ))  //false alarm
- 				if (waitTO == null)// && r.keyCode == "32")  //false alarm
+				if (waitTO == null && r.keyCode == "32")  //false alarm
 				{ 
 				false_alarms += String(rew_trial[trial])
-				console.log(false_alarms)
 				}
-// 				else if (r.keyCode == "32" || r.keyCode == "49" || r.keyCode == "50"  || r.keyCode == "51" || r.keyCode == "52" ) { //space bar
- 				else {//if (r.keyCode == "32") { //space bar
+				else if (r.keyCode == "32") { //space bar
 				ignore_press = 1
 				clearTimeout(waitTO);
 
@@ -125,9 +117,8 @@
 				rt_thresh = rt_thresh + rt_step_up;
 				}
 				
-				console.log(out)
+				
                 out += rew.toFixed(2) + "," + rt + "," + rt_thresh_old;
-                console.log(out)
                 if (trial != num_trials-1) { out += ","; } //append comma if not the last trial
 
 				setTimeout(nextTrainingStep, im_dur - rt);  //wait for rest of imdur before moving on to fixation
@@ -140,7 +131,7 @@
                 if (trial == num_trials) { 
                 	
                 	perc_corr = 100*bank/num_trials
-					$("#outcome").html("You responded fast enough " + perc_corr.toFixed(0) + "% of the time.");
+					$("#outcome").html("");
 					$("#cue_left").hide();
 					$("#cue_right").hide();
 					$("#fix").hide();
@@ -148,9 +139,7 @@
 					$("#new_trial").hide()
 					$("#outcome").show();
 					
-					rt_thresh = average(rts)
-					$.cookie('avg_rt',rt_thresh); //Set cookie
-			
+					rt_thresh = average(rts)			
                     setTimeout(done, outcome_dur);
                     return;
                 }
@@ -158,12 +147,12 @@
                 $("#fix").hide();
 
 				if (lr[trial] == 0){
-				$("#cue_left").css('background','url(' + cue_img.src +')');
-				$("#cue_right").css('background','url(' + scramble.src +')');}
+				$("#cue_left").css('background','url(' + cue_img[0].src +')');
+				$("#cue_right").css('background','url(' + cue_img[1].src +')');}
 
 				else {
-				$("#cue_right").css('background','url(' + cue_img.src +')');
-				$("#cue_left").css('background','url(' + scramble.src +')');}
+				$("#cue_right").css('background','url(' + cue_img[1].src +')');
+				$("#cue_left").css('background','url(' + cue_img[0].src +')');}
 
 				$("#cue_left").show();
 				$("#cue_right").show();

@@ -200,9 +200,7 @@
 				false_alarms += String(trial_order[trial]) + ',' + String(tStep) + ','
 				bank = bank - 2*reward
 				ignore_press = 1
-				
-				console.log(rew.toFixed(2) + "," + rt + "," + rt_thresh.toFixed(2));
-				console.log("bank is " + bank)
+				console.log(false_alarms)
 				}
 				else if (r.keyCode == "32") { //space bar
 				ignore_press = 1
