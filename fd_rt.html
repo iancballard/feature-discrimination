@@ -24,12 +24,12 @@
             var out = ""; // this string will be saved on the server at the end of training
             var num_trials = 20
             var rt_thresh = 450 //start value for rt threshold
-            var rt_step_up = 50 //adjust size for thresholding
-            var rt_step_down = 50 //adjust size for thresholding
+            var rt_step_up = 30 //adjust size for thresholding
+            var rt_step_down = 30 //adjust size for thresholding
 			var sub_id = $.cookie('sub_id')
 
 			//set experimental timing
-			var im_dur = 2000; //image duration
+			var im_dur = 1500; //image duration
             var latency = 500; //latency to target
             var fix_dur = 1000;
             var out_dur = 1000; 
@@ -98,14 +98,12 @@
 			//Record responses
 			function response(r) {
 				if (ignore_press == 1) {return;} //ignore if already pressed
-// 				if (waitTO == null && (r.keyCode == "32" || r.keyCode == "49" || r.keyCode == "50"  || r.keyCode == "51" || r.keyCode == "52" ))  //false alarm
- 				if (waitTO == null)// && r.keyCode == "32")  //false alarm
+ 				if (waitTO == null)//false alarm
 				{ 
 				false_alarms += String(rew_trial[trial])
 				console.log(false_alarms)
 				}
-// 				else if (r.keyCode == "32" || r.keyCode == "49" || r.keyCode == "50"  || r.keyCode == "51" || r.keyCode == "52" ) { //space bar
- 				else {//if (r.keyCode == "32") { //space bar
+ 				else {
 				ignore_press = 1
 				clearTimeout(waitTO);
 

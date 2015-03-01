@@ -21,10 +21,12 @@
             var num_trials_per_condition = 8
             var num_blocked_trials = 8
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
-            var rt_step_up = 10 //adjust size for thresholding
-            var rt_step_down = 10 //adjust size for thresholding
+            var rt_step_up = 20 //adjust size for thresholding
+            var rt_step_down = 20 //adjust size for thresholding
 			var bank = parseFloat($.cookie('earnings')); //Set cookie
-			var sub_id = $.cookie('sub_id')
+			var sub_id = parseFloat($.cookie('sub_id'));
+			var exp_phase = $.cookie('exp_phase')
+
 			//timing
 			var start_time = 0
 			var image_time = []
@@ -63,30 +65,80 @@
 			console.log(iti_dur)		
 			console.log(feedback_iti)		
 		
-			//experiment set up
-			rew_trial = [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0]
-			trial_order = [2, 10, 3, 10, 4, 10, 1, 10, 1, 10, 2, 10, 4, 10, 4, 10, 1, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 1, 10, 2, 10, 1, 10, 4, 10, 3, 10, 1, 10, 1, 10, 2, 10, 4, 10, 3, 10, 2, 10, 2, 10, 1, 10, 3, 10, 2, 10, 4, 10, 3, 10, 4, 10, 1, 10, 1, 10, 4, 10, 2, 10, 4, 10, 4, 10, 2, 10, 2, 10, 1, 10, 2, 10, 3, 10, 4, 10]
-			cond = [2, 3, 4, 1, 1, 2, 4, 4, 1, 3, 3, 3, 3, 3, 1, 2, 1, 4, 3, 1, 1, 2, 4, 3, 2, 2, 1, 3, 2, 4, 3, 4, 1, 1, 4, 2, 4, 4, 2, 2, 1, 2, 3, 4]
-			
 			//set up left right counterbalance
 			for(var i=0; i<=cond.length/2; i++){lr.push(0);}
 			for(var i=0; i<=(cond.length+1)/2; i++){lr.push(1);}
 			shuffle(lr)
 			
 			
-			//preload images
+			///////////////////////////////////
+			//preload images depending on which phase of the experiment. Cookies were set in sub_id_exp script
 			var scramble = new Image();
 			scramble.src = "/fd/pics/scramble.jpg";
-
-			//determine which cue is which
-			var cue_cb = shuffle([1,2,3,4]);
-			$.cookie('cue_cb',cue_cb);
 			cue_img = [];
-			for (var i=0; i<cue_cb.length; i++) {
-				cue_img[i] = new Image();
-				cue_img[i].src = "/fd/pics/cue" + cue_cb[i] + ".jpg";
-			}
+			cue_img[0] = new Image();
+			cue_img[1] = new Image();
+			cue_img[2] = new Image();
 
+			if (exp_phase == 0) {//practice
+				cue_img[0].src = "/fd/pics/fmri_stims/practice/face_sim.jpg";
+				cue_img[1].src = "/fd/pics/fmri_stims/practice/house_sim.jpg";			
+				cue_img[2].src = "/fd/pics/fmri_stims/practice/body_sim.jpg";
+				
+				sub_id = sub_id + "_practice"
+				
+				rew_trial = [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0]
+				trial_order = [2, 10, 3, 10, 4, 10, 1, 10, 1, 10, 2, 10, 4, 10, 4, 10, 1, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 1, 10, 2, 10, 1, 10, 4, 10, 3, 10, 1, 10, 1, 10, 2, 10, 4, 10, 3, 10, 2, 10, 2, 10, 1, 10, 3, 10, 2, 10, 4, 10, 3, 10, 4, 10, 1, 10, 1, 10, 4, 10, 2, 10, 4, 10, 4, 10, 2, 10, 2, 10, 1, 10, 2, 10, 3, 10, 4, 10]
+				cond = [2, 3, 4, 1, 1, 2, 4, 4, 1, 3, 3, 3, 3, 3, 1, 2, 1, 4, 3, 1, 1, 2, 4, 3, 2, 2, 1, 3, 2, 4, 3, 4, 1, 1, 4, 2, 4, 4, 2, 2, 1, 2, 3, 4]
+			}
+			if (exp_phase == 1) {//first phase
+				var face_stim = parseFloat($.cookie('face_sim_1'))
+				var house_stim = parseFloat($.cookie('house_sim_1'))
+				var body_stim = parseFloat($.cookie('body_sim_1'))
+				
+				cue_img[0].src = "/fd/pics/fmri_stims/house" + house_stim + ".jpg";
+				cue_img[1].src = "/fd/pics/fmri_stims/face" + face_stim +".jpg";			
+				cue_img[2].src = "/fd/pics/fmri_stims/body" + body_stim + ".jpg";
+				
+				sub_id = sub_id + "_1"
+				
+				rew_trial = [0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0]
+				trial_order = [2, 10, 4, 10, 2, 10, 1, 10, 4, 10, 3, 10, 1, 10, 2, 10, 3, 10, 4, 10, 1, 10, 1, 10, 4, 10, 3, 10, 1, 10, 4, 10, 4, 10, 2, 10, 4, 10, 1, 10, 3, 10, 2, 10, 2, 10, 4, 10, 2, 10, 2, 10, 3, 10, 3, 10, 1, 10, 2, 10, 1, 10, 3, 10, 3, 10, 4, 10, 4, 10, 1, 10, 3, 10, 2, 10, 3, 10, 1, 10, 2, 10, 1, 10, 3, 10, 4, 10]
+				cond = [2, 4, 2, 1, 4, 3, 1, 2, 3, 4, 1, 1, 4, 3, 1, 4, 4, 2, 4, 1, 3, 2, 2, 4, 2, 2, 3, 3, 1, 2, 1, 3, 3, 4, 4, 1, 3, 2, 3, 1, 2, 1, 3, 4]
+			}
+			if (exp_phase == 2) {//second phase
+				var face_stim = parseFloat($.cookie('face_sim_2'))
+				var house_stim = parseFloat($.cookie('house_sim_2'))
+				var body_stim = parseFloat($.cookie('body_sim_2'))
+				
+				cue_img[0].src = "/fd/pics/fmri_stims/face" + face_stim +".jpg";
+				cue_img[1].src = "/fd/pics/fmri_stims/body" + body_stim + ".jpg";			
+				cue_img[2].src = "/fd/pics/fmri_stims/house" + house_stim + ".jpg";	
+				
+				sub_id = sub_id + "_2"
+				
+				rew_trial = [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0]
+				trial_order = [2, 10, 2, 10, 2, 10, 4, 10, 4, 10, 3, 10, 3, 10, 2, 10, 2, 10, 3, 10, 1, 10, 4, 10, 2, 10, 4, 10, 1, 10, 1, 10, 4, 10, 4, 10, 2, 10, 1, 10, 3, 10, 1, 10, 3, 10, 1, 10, 4, 10, 1, 10, 3, 10, 3, 10, 4, 10, 1, 10, 3, 10, 1, 10, 4, 10, 3, 10, 4, 10, 3, 10, 2, 10, 2, 10, 1, 10, 2, 10, 4, 10, 1, 10, 3, 10, 2, 10]
+				cond = [2, 2, 2, 4, 4, 3, 3, 2, 2, 3, 1, 4, 2, 4, 1, 1, 4, 4, 2, 1, 3, 1, 3, 1, 4, 1, 3, 3, 4, 1, 3, 1, 4, 3, 4, 3, 2, 2, 1, 2, 4, 1, 3, 2]
+			}
+			if (exp_phase == 3) {//third phase
+				var face_stim = parseFloat($.cookie('face_sim_3'))
+				var house_stim = parseFloat($.cookie('house_sim_3'))
+				var body_stim = parseFloat($.cookie('body_sim_3'))
+				
+				cue_img[0].src = "/fd/pics/fmri_stims/body" +body_stim + ".jpg";
+				cue_img[1].src = "/fd/pics/fmri_stims/house" + house_stim + ".jpg";			
+				cue_img[2].src = "/fd/pics/fmri_stims/face" + face_stim + ".jpg";
+				
+				sub_id = sub_id + "_3"
+				
+				rew_trial = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0]
+				trial_order = [2, 10, 2, 10, 4, 10, 4, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 1, 10, 1, 10, 1, 10, 2, 10, 4, 10, 3, 10, 3, 10, 3, 10, 2, 10, 4, 10, 2, 10, 4, 10, 1, 10, 1, 10, 4, 10, 4, 10, 4, 10, 1, 10, 3, 10, 2, 10, 4, 10, 2, 10, 1, 10, 2, 10, 2, 10, 2, 10, 3, 10, 1, 10, 1, 10, 1, 10, 4, 10, 3, 10, 1, 10, 2, 10, 4, 10]
+				cond = [2, 2, 4, 4, 3, 3, 3, 3, 3, 1, 1, 1, 2, 4, 3, 3, 3, 2, 4, 2, 4, 1, 1, 4, 4, 4, 1, 3, 2, 4, 2, 1, 2, 2, 2, 3, 1, 1, 1, 4, 3, 1, 2, 4]
+			}
+			
+			///////////////////////////////////
+			///////////////////////////////////
 			//listen for keypresses
 			window.addEventListener("keydown", response, false);
 			
@@ -124,7 +176,6 @@
 
 			//Training over. Write out respondes to the text file
 			function done() {		
-				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " cue_cb_sim="+cue_cb);		
 				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " cond_sim="+cond);
 				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " trial_order_sim="+trial_order)		
 				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " rew_sim="+rew_trial);			
@@ -193,7 +244,8 @@
 					$("#fix").hide();
 					$("#target").hide();	
 					$("#outcome").show();
-			
+					
+					$.cookie('exp_phase',exp_phase + 1)
                     setTimeout(done, out_dur);
                     return;
                 }
@@ -369,7 +421,7 @@
 			}
 
 			#outcome {
-				font: 200% "Trebuchet MS", sans-serif; 
+				font: 300% "Trebuchet MS", sans-serif; 
 				color: white;
 				position: absolute;
 				top: 50%;

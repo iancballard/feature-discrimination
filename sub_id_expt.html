@@ -21,12 +21,41 @@ function doAlert(msg) {
         $dialog.html("<p>" + msg + "</p>");
         $dialog.dialog('open');
 }
-
+            function shuffle(arr) { //self explanatory
+                for (var j,x,i=arr.length; i; j=parseInt(Math.random()*i), x=arr[--i], arr[i]=arr[j], arr[j]=x);
+                return arr;
+            }
+            
 			function submit() {
 				var sub_id = jQuery.trim($("#id").val());
 				$.cookie('sub_id',sub_id); //Set cookie
-				$.cookie('exp_phase',0)
-
+				$.cookie('exp_phase',1)
+			//set up image identies for the main experiment
+			var stim_list = []
+			for (var i = 0; i < 30; i++) {stim_list.push(i)}
+			shuffle(stim_list)
+			$.cookie('face_sim_1',stim_list[0]); //Set cookie
+			$.cookie('face_sim_2',stim_list[1]); //Set cookie
+			$.cookie('face_sim_3',stim_list[2]); //Set cookie
+			$.cookie('face_ser_1',stim_list[3]); //Set cookie
+			$.cookie('face_ser_2',stim_list[4]); //Set cookie
+			$.cookie('face_ser_3',stim_list[5]); //Set cookie
+			shuffle(stim_list)
+			$.cookie('house_sim_1',stim_list[0]); //Set cookie
+			$.cookie('house_sim_2',stim_list[1]); //Set cookie
+			$.cookie('house_sim_3',stim_list[2]); //Set cookie
+			$.cookie('house_ser_1',stim_list[3]); //Set cookie
+			$.cookie('house_ser_2',stim_list[4]); //Set cookie
+			$.cookie('house_ser_3',stim_list[5]); //Set cookie
+			shuffle(stim_list)
+			$.cookie('body_sim_1',stim_list[0]); //Set cookie
+			$.cookie('body_sim_2',stim_list[1]); //Set cookie
+			$.cookie('body_sim_3',stim_list[2]); //Set cookie
+			$.cookie('body_ser_1',stim_list[3]); //Set cookie
+			$.cookie('body_ser_2',stim_list[4]); //Set cookie
+			$.cookie('body_ser_3',stim_list[5]); //Set cookie
+			
+			
 				if (id.length == 0) {
                                         doAlert("Please enter your subject id to continue.");
                                         return;

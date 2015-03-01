@@ -29,7 +29,7 @@ function doAlert(msg) {
                                         return;
                                 }
 
-				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " instruct="+instruct, function(){
+				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " instruct_ser="+instruct, function(){
                                 	document.location="/cgi-bin/fd.cgi";
                       
                                 });
