@@ -29,7 +29,8 @@ function doAlert(msg) {
 			function submit() {
 				var sub_id = jQuery.trim($("#id").val());
 				$.cookie('sub_id',sub_id); //Set cookie
-				$.cookie('exp_phase',1)
+				$.cookie('ser_exp_phase',0)
+				$.cookie('sim_exp_phase',0)
 			//set up image identies for the main experiment
 			var stim_list = []
 			for (var i = 0; i < 30; i++) {stim_list.push(i)}
