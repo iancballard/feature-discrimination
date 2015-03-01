@@ -52,6 +52,7 @@
             var scramble_dur = 1500; //scramble image duration
             var feedback_dur = 1000; // feedback duration
             var feedback_iti = 1000; // feedback iti duration
+            var get_ready_dur = 500; //get ready text duration
 
             //Set up ITIs
             //250 trials worth of itis generated from matlab. Poisson, mean 4s, min 2s, max 12s. 
@@ -194,7 +195,10 @@
 				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " rew_ser="+rew_trial);			
 				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " fa_ser="+false_alarms);			
 				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " ser="+out);
-				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " lr_ser="+lr);				
+				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " lr_ser="+lr);	
+				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " fb_iti_ser="+feedback_iti);	
+				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " iti_dur_ser="+iti_dur);	
+				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " iti_dur_full_ser="+iti_dur_full);						
 				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " im_time_ser="+image_time);
 				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " tar_time_ser="+target_time);
 				$.post("/cgi-bin/fd_out.cgi?" + sub_id + " fb_time_ser="+feedback_time);
@@ -272,6 +276,13 @@
                 	$("#outcome").html("Get ready for the next trial");
                 	$("#outcome").show();
                 	iti_time.push((Date.now() - start_time)/1000.0) //record image onset
+                	
+                	//start trial
+                	tStep = 3;
+					resp = -2;
+					out += "-2,-2,-2";
+                	if (trial != rew_trial.length-1) { out += ","; }
+            		setTimeout(nextTrainingStep, get_ready_dur); //Pause and then start the rest of the trial
                 }
 				else { //main trial
 					if (trial_order[trial] == 1){ //ser fp+ A
@@ -304,25 +315,22 @@
   					trial_idx += 1;
 					
 					image_time.push((Date.now() - start_time)/1000.0) //record image onset
-	  				console.log(image_time)
-				}
-				
-
+	  				console.log(image_time) 				
  				
- 				
-				if (rew_trial[trial] == 1) { //rewarded trial
-				tStep = 0;
-				resp = -1;
-				pre_resp = 1 //flag for determining when they respond
-				rt = new Date().getTime();
-                waitTO = setTimeout(nextTrainingStep, latency); //Pause and then start the rest of the trial
-				}
-				else { //non rewarded trial
-				tStep = 3;
-				resp = -2;
-				out += "-2,-2,-2";
-                if (trial != rew_trial.length-1) { out += ","; }
-                setTimeout(nextTrainingStep, im_dur); //Pause and then start the rest of the trial
+					if (rew_trial[trial] == 1) { //rewarded trial
+						tStep = 0;
+						resp = -1;
+						pre_resp = 1 //flag for determining when they respond
+						rt = new Date().getTime();
+						waitTO = setTimeout(nextTrainingStep, latency); //Pause and then start the rest of the trial
+					}
+					else { //non rewarded trial
+						tStep = 3;
+						resp = -2;
+						out += "-2,-2,-2";
+						if (trial != rew_trial.length-1) { out += ","; }
+						setTimeout(nextTrainingStep, im_dur); //Pause and then start the rest of the trial
+					}
 				}
 			}
 
@@ -373,6 +381,7 @@
 					$("#fix").hide();
 					$("#outcome").show();
 					feedback_time.push((Date.now() - start_time)/1000.0) //record image onset
+					console.log('feedback is ' + feedback_time)
 					setTimeout(nextTrainingStep, feedback_dur)	
 					break;
 						
