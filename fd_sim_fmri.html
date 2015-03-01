@@ -47,7 +47,8 @@
 			var im_dur = 1500; //image duration
             var latency = 500; //latency to target
             var out_dur =  4000; //outcome duration at end of experiment
-            var init_dur = 2500; //get ready duration CHANGE ME TO 12!!!!!!!
+            var init_dur1 = 10000; //get ready duration CHANGE ME TO 12!!!!!!!
+            var init_dur2 = 12000; //get ready duration CHANGE ME TO 12!!!!!!!
             var feedback_dur = 1000; // feedback duration
 
             //Set up ITIs
@@ -163,9 +164,9 @@
 				start_time = Date.now();  
 				console.log(start_time)
 				
-                setTimeout(function() { $("#outcome").hide(); $("#fix").show();}, init_dur);
+                setTimeout(function() { $("#outcome").hide(); $("#fix").show();}, init_dur1);
 
- 				setTimeout(nextTrainingTrial, init_dur*2); //pause and start the experiment
+ 				setTimeout(nextTrainingTrial, init_dur2); //pause and start the experiment
 			});
 
 
