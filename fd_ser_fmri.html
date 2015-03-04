@@ -20,8 +20,9 @@
             var out = ""; // this string will be saved on the server at the end of training
             var num_trials_per_condition = 8
             var rt_thresh = parseFloat($.cookie('avg_rt')); //start value for rt threshold
-            var rt_step_up = 20 //adjust size for thresholding
-            var rt_step_down = 20 //adjust size for thresholding
+            console.log(rt_thresh)
+            var rt_step_up = 10 //adjust size for thresholding
+            var rt_step_down = 10 //adjust size for thresholding
 			var sub_id = parseFloat($.cookie('sub_id'))
 			
 			//set up trial order
@@ -45,7 +46,7 @@
 
 			//set experimental timing
 			var im_dur = 1500; //image duration
-            var latency = 500; //latency to target
+            var latency = 600; //latency to target
             var out_dur =  4000; //outcome duration at end of experiment
             var init_dur1 = 10000; //get ready duration CHANGE ME TO 12!!!!!!!
             var init_dur2 = 12000; //get ready duration CHANGE ME TO 12!!!!!!!
@@ -93,6 +94,7 @@
 				
 				sub_id = sub_id + "_practice"
 				bank = 0 //start with no money CHANGE FOR CB!!!
+				$.cookie('earnings',0); //Set cookie
 
 				//experiment set up
 				rew_trial = [1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0]
@@ -110,6 +112,7 @@
 				
 				sub_id = sub_id + "_1"
 				bank = 0 //start with no money CHANGE FOR CB!!!
+				$.cookie('earnings',0); //Set cookie
 
 				rew_trial = [0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0]
 				trial_order = [1, 2, 10, 6, 10, 6, 10, 4, 5, 10, 1, 2, 10, 3, 10, 1, 2, 10, 1, 2, 10, 1, 2, 10, 4, 5, 10, 4, 5, 10, 3, 10, 1, 2, 10, 4, 5, 10, 4, 5, 10, 6, 10, 3, 10, 4, 5, 10, 6, 10, 3, 10, 3, 10, 6, 10, 4, 5, 10, 3, 10, 6, 10, 1, 2, 10, 3, 10, 1, 2, 10, 4, 5, 10, 4, 5, 10, 6, 10, 3, 10, 6, 10, 1, 2, 10, 3, 10, 6, 10, 3, 10, 4, 5, 10, 6, 10, 1, 2, 10]
@@ -168,7 +171,7 @@
 				$("#outcome").show();
 
 				alert("Press OK to start the experiment")
-				start_time = Date.now();  
+				start_time = window.performance.now();  
 				console.log(start_time)
 				
                 setTimeout(function() { $("#outcome").hide(); $("#fix").show();}, init_dur1);
@@ -217,7 +220,7 @@
 				bank = bank - reward
 				ignore_press = 1
 				console.log(false_alarms)
-				false_alarm_time.push((Date.now() - start_time)/1000.0)
+				false_alarm_time.push((window.performance.now() - start_time)/1000.0)
 				}
 				else {//if (r.keyCode == "32") { //space bar
 				ignore_press = 1
@@ -275,7 +278,7 @@
                 	$("#background").hide();
                 	$("#outcome").html("Get ready for the next trial");
                 	$("#outcome").show();
-                	iti_time.push((Date.now() - start_time)/1000.0) //record image onset
+                	iti_time.push((window.performance.now() - start_time)/1000.0) //record image onset
                 	
                 	//start trial
                 	tStep = 3;
@@ -314,7 +317,7 @@
   					$("#background").show();
   					trial_idx += 1;
 					
-					image_time.push((Date.now() - start_time)/1000.0) //record image onset
+					image_time.push((window.performance.now() - start_time)/1000.0) //record image onset
 	  				console.log(image_time) 				
  				
 					if (rew_trial[trial] == 1) { //rewarded trial
@@ -344,7 +347,7 @@
 					case 1: // response
 					pre_resp = null
 					$("#target").show();
-					target_time.push((Date.now() - start_time)/1000.0) //record image onset
+					target_time.push((window.performance.now() - start_time)/1000.0) //record image onset
 	  				console.log(target_time)
                     if (resp == -1) { //no response yet
                     	rt = new Date().getTime();
@@ -380,7 +383,7 @@
 					$("#outcome").html(val);
 					$("#fix").hide();
 					$("#outcome").show();
-					feedback_time.push((Date.now() - start_time)/1000.0) //record image onset
+					feedback_time.push((window.performance.now() - start_time)/1000.0) //record image onset
 					console.log('feedback is ' + feedback_time)
 					setTimeout(nextTrainingStep, feedback_dur)	
 					break;
@@ -416,6 +419,7 @@
 				margin: 0;
 				width: 100vw;
 				height: 100vh;
+				cursor:none;
 			}
             #cue_right,#cue_left {
 				width: 80vw;

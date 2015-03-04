@@ -139,7 +139,7 @@
 				//If experiment is over, show bank, pause 3 seconds and call done
                 if (trial == num_trials) { 
                 	
-                	perc_corr = 4.0*bank/num_trials
+                	perc_corr = 100*4.0*bank/num_trials
 					$("#outcome").html("You responded fast enough " + perc_corr.toFixed(0) + "% of the time.");
 					$("#cue_left").hide();
 					$("#cue_right").hide();
@@ -149,6 +149,7 @@
 					$("#outcome").show();
 					
 					rt_thresh = average(rts)
+					console.log(rt_thresh)
 					$.cookie('avg_rt',rt_thresh); //Set cookie
 			
                     setTimeout(done, outcome_dur);
@@ -253,6 +254,7 @@
 				margin: 0;
 				width: 100vw;
 				height: 100vh;
+				cursor:none;
 			}
             #cue_right,#cue_left {
 				width: 80vw;

@@ -21,6 +21,7 @@ function doAlert(msg) {
         $dialog.html("<p>" + msg + "</p>");
         $dialog.dialog('open');
 }
+
             function shuffle(arr) { //self explanatory
                 for (var j,x,i=arr.length; i; j=parseInt(Math.random()*i), x=arr[--i], arr[i]=arr[j], arr[j]=x);
                 return arr;
@@ -33,7 +34,7 @@ function doAlert(msg) {
 				$.cookie('sim_exp_phase',0)
 			//set up image identies for the main experiment
 			var stim_list = []
-			for (var i = 0; i < 30; i++) {stim_list.push(i)}
+			for (var i = 0; i < 27; i++) {stim_list.push(i)}
 			shuffle(stim_list)
 			$.cookie('face_sim_1',stim_list[0]); //Set cookie
 			$.cookie('face_sim_2',stim_list[1]); //Set cookie
