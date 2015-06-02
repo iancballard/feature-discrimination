@@ -24,7 +24,8 @@
             var rt_step_up = 10 //adjust size for thresholding
             var rt_step_down = 10 //adjust size for thresholding
 			var sub_id = parseFloat($.cookie('sub_id'));
-		
+			var lag = 0
+			
 			//set up trial order
 			var exp_phase = parseFloat($.cookie('sim_exp_phase'))
 			exp_phase += 1;
@@ -91,6 +92,7 @@
 				rew_trial = [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0]
 				trial_order = [1, 10, 2, 10, 4, 10, 2, 10, 4, 10, 1, 10, 3, 10, 4, 10, 2, 10, 1, 10, 3, 10, 1, 10, 4, 10, 4, 10, 4, 10, 4, 10, 2, 10, 1, 10, 2, 10, 1, 10, 2, 10, 4, 10, 4, 10, 3, 10, 3, 10, 1, 10, 3, 10, 2, 10, 1, 10, 1, 10, 3, 10, 3, 10, 2, 10, 2, 10, 3, 10, 3, 10, 1, 10, 2, 10, 3, 10, 4, 10]
 				cond = [1, 2, 4, 2, 4, 1, 3, 4, 2, 1, 3, 1, 4, 4, 4, 4, 2, 1, 2, 1, 2, 4, 4, 3, 3, 1, 3, 2, 1, 1, 3, 3, 2, 2, 3, 3, 1, 2, 3, 4]
+			
 			}
 			if (exp_phase == 1) {//first phase
 				var face_stim = parseFloat($.cookie('face_sim_1'))
@@ -102,11 +104,12 @@
 				cue_img[2].src = "/fd/pics/fmri_stims/body" + body_stim + ".jpg";
 				
 				sub_id = sub_id + "_1"
-				bank = parseFloat($.cookie('earnings')); //Set cookie
+				bank = 0//parseFloat($.cookie('earnings')); //Set cookie
 
 				rew_trial = [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]
 				trial_order = [2, 10, 2, 10, 4, 10, 2, 10, 4, 10, 4, 10, 3, 10, 4, 10, 3, 10, 2, 10, 1, 10, 2, 10, 4, 10, 1, 10, 3, 10, 3, 10, 3, 10, 4, 10, 4, 10, 1, 10, 4, 10, 3, 10, 1, 10, 3, 10, 1, 10, 2, 10, 1, 10, 2, 10, 3, 10, 2, 10, 1, 10, 3, 10, 1, 10, 4, 10, 1, 10, 2, 10, 2, 10, 3, 10, 1, 10, 4, 10]
 				cond = [2, 2, 4, 2, 4, 4, 3, 4, 3, 2, 1, 2, 4, 1, 3, 3, 3, 4, 4, 1, 4, 3, 1, 3, 1, 2, 1, 2, 3, 2, 1, 3, 1, 4, 1, 2, 2, 3, 1, 4]
+
 			}
 			if (exp_phase == 2) {//second phase
 				var face_stim = parseFloat($.cookie('face_sim_2'))
@@ -243,8 +246,8 @@
 				
                 out += rew.toFixed(2) + "," + rt + "," + rt_thresh_old.toFixed(2);
                 if (trial != rew_trial.length-1) { out += ","; } //append comma if not the last trial
-				if (pre_resp == null) { setTimeout(nextTrainingStep, im_dur - rt); } //wait for rest of imdur before moving on to fixation
-				else if (pre_resp == 1){ setTimeout(nextTrainingStep, latency + rt);}  //wait for rest of imdur before moving on to fixation
+				if (pre_resp == null) { setTimeout(nextTrainingStep, im_dur - rt - latency - lag); } //wait for rest of imdur before moving on to fixation
+				else if (pre_resp == 1){ setTimeout(nextTrainingStep, latency + rt - lag);}  //wait for rest of imdur before moving on to fixation
 				}	
 			}
 			
@@ -264,6 +267,14 @@
                     return;
                 }
                 
+                //adjust timing
+				if (trial > 0) {
+ 					lag = window.performance.now()/1000.0 - next_trial_time
+					console.log('lag6 is ' + lag)
+				}
+				else { lag = 0}
+
+				
                 $("#fix").hide();
 
 				if (trial_order[trial] == 10) {//iti image
@@ -277,7 +288,7 @@
 					resp = -2;
 					out += "-2,-2,-2";
                 	if (trial != rew_trial.length-1) { out += ","; }
-            		setTimeout(nextTrainingStep, get_ready_dur); //Pause and then start the rest of the trial
+            		setTimeout(nextTrainingStep, get_ready_dur - lag); //Pause and then start the rest of the trial
 
                 }
 				else { //main trial
@@ -315,15 +326,15 @@
 						tStep = 0;
 						resp = -1;
 						pre_resp = 1 //flag for determining when they respond
-						rt = new Date().getTime();
-						waitTO = setTimeout(nextTrainingStep, latency); //Pause and then start the rest of the trial
+						rt = window.performance.now()
+						waitTO = setTimeout(nextTrainingStep, latency - lag); //Pause and then start the rest of the trial
 					}
 					else { //non rewarded trial
 						tStep = 3;
 						resp = -2;
 						out += "-2,-2,-2";
 						if (trial != rew_trial.length-1) { out += ","; }
-					setTimeout(nextTrainingStep, im_dur); //Pause and then start the rest of the trial
+						setTimeout(nextTrainingStep, im_dur - lag); //Pause and then start the rest of the trial
 					}
 				}
 			}
@@ -340,17 +351,23 @@
 					$("#target").show();
 					target_time.push((window.performance.now() - start_time)/1000.0) //record image onset
 	  				console.log(target_time)
+	  				console.log('latency is ' + (target_time[target_time.length - 1] - image_time[image_time.length -1]))
+
+ 	  				lag = (window.performance.now())/1000.0 - image_time[image_time.length - 1]
+	  				console.log('init_lag is ' + lag)
                     if (resp == -1) { //no response yet
-                    	rt = new Date().getTime();
-						waitTO = setTimeout(nextTrainingStep, im_dur - latency); //1250 ms to respond				
+                    	rt = window.performance.now()
+						waitTO = setTimeout(nextTrainingStep, im_dur - latency - lag); //1250 ms to respond				
 					}
 					else { //already responded pre-target
 						waitTO = null;
-						setTimeout(nextTrainingStep, im_dur - latency);
+						setTimeout(nextTrainingStep, im_dur - latency - lag);
 					}
 					break;
 
 					case 2: // feedback iti
+ 					lag = (window.performance.now())/1000.0 - image_time[image_time.length - 1] - im_dur/1000.0 //difference between actual imdur and imdur. Positive means it took too long
+					console.log('lag2 is ' + lag)
 					waitTO = null;
 					if (resp == -1){ //if no response
 						out += "-1,-1,-1";
@@ -367,19 +384,35 @@
                		$("#cue_right").hide();
 					$("#background").hide();
 					$("#outcome").hide()
-					setTimeout(nextTrainingStep, feedback_iti[trial])
+					setTimeout(nextTrainingStep, feedback_iti[trial] - lag)
 					break;
 					
 					case 3: //feedback
+ 					lag = (window.performance.now())/1000.0 - image_time[image_time.length - 1] - feedback_iti[trial]/1000.0 - im_dur/1000.0 //difference between actual imdur and imdur. Positive means it took too long
+					console.log('lag3 is ' + lag)
 					$("#outcome").html(val);
 					$("#fix").hide();
 					$("#outcome").show();
 					feedback_time.push((window.performance.now() - start_time)/1000.0) //record image onset
 	  				console.log(feedback_time)		
-					setTimeout(nextTrainingStep, feedback_dur)	
+					setTimeout(nextTrainingStep, feedback_dur - lag)	
 					break;
 						
 					case 4: //iti
+					if (trial_order[trial] == 10){
+ 						lag = (window.performance.now())/1000.0 - iti_time[iti_time.length - 1] - get_ready_dur/1000.0 
+										console.log('lag4 is ' + lag)
+					}
+					else if (rew_trial[trial] == 1){
+ 						lag = (window.performance.now())/1000.0 - feedback_time[feedback_time.length - 1] - feedback_dur/1000.0
+																console.log('lag5 is ' + lag)
+
+					}
+					else {
+ 						lag = (window.performance.now())/1000.0 - image_time[image_time.length - 1] - im_dur/1000.0 
+																console.log('lag6 is ' + lag)
+
+					}
 					$("#outcome").hide();	
 					$("#cue_left").hide();
                		$("#cue_right").hide();
@@ -388,10 +421,12 @@
                		$("#fix").show();
                		
 					if (trial_order[trial] == 10) {
-						setTimeout(nextTrainingTrial, iti_dur[trial - 1]);  //fixation
+						setTimeout(nextTrainingTrial, iti_dur[trial - 1] - lag);  //fixation
+						next_trial_time = window.performance.now()/1000.0 + iti_dur[trial - 1]/1000.0 - lag
 					}
 					else {
-						setTimeout(nextTrainingTrial, iti_dur[trial]);  //fixation
+						setTimeout(nextTrainingTrial, iti_dur[trial] - lag);  //fixation
+						next_trial_time = window.performance.now()/1000.0 + iti_dur[trial]/1000.0 - lag
 					}
 					trial++;
 					break;
